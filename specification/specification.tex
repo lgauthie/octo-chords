@@ -1,0 +1,143 @@
+% -----------------------------------------------
+% Template for ISMIR 2013
+% (based on earlier ISMIR templates)
+% -----------------------------------------------
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{ismir2013,amsmath,cite}
+\usepackage{graphicx}
+
+% Title.
+% ------
+\title{CSC 475 Final Project: Design Specification}
+
+% Single address
+% To use with only one author or several with the same address
+% ---------------
+%\oneauthor
+% {Names should be omitted for double-blind reviewing}
+% {Affiliations should be omitted for double-blind reviewing}
+
+% Two addresses
+% --------------
+%\twoauthors
+% {First author} {School \\ Department}
+% {Second author} {Company \\ Address}
+
+% Three addresses
+% --------------
+\threeauthors
+{Lee Gauthier} {\tt lgauthie@uvic.ca}
+{Robert Janzen} {\tt robertjanzenbc@gmail.com}
+{Sondra Moyls} {\tt smoyls@uvic.ca}
+
+% Four addresses
+% --------------
+%\fourauthors
+% {First author} {Affiliation1 \\ {\tt author1@ismir.edu}}
+% {Second author}{Affiliation2 \\ {\tt author2@ismir.edu}}
+% {Third author} {Affiliation3 \\ {\tt author3@ismir.edu}}
+% {Fourth author} {Affiliation4 \\ {\tt author4@ismir.edu}}
+
+\begin{document}
+%
+\maketitle
+%
+
+\section{Design Outline}\label{sec:desoutline}
+Our project aims to explore the effects of data preprocessing on the accuracy
+of chord recognition using hidden markov models. In particular, to what extent
+can the extraction of transient information and harmonic information be used to
+improve chord recognition? Are one of both of these techniques more efficient
+for certain genres of music than for others? Previous research using these
+preprocessing techniques is discussed in \cite{McVicar:00}.
+
+\section{Tools}\label{sec:tools}
+
+For this project we will use the annotated Billboard 100 data set. We will
+append genre information to the data for tests on individual genres. For data
+mining processes, we will use sci-kit. Feature extraction will be done using
+Marsyas and Python
+
+\section{Proposed Timeline}\label{sec:timeline}
+
+Friday Feb 28 - Read all relevant papers, retrieve existing code \newline
+Friday Mar 7 - Start working on F0 extraction and transient removal, create
+more solid timeline \newline Friday Mar 14 - Continue working on feature
+extraction, learning models, start progress report \newline Friday Mar 21 -
+Progress Report Due \newline Friday Mar 28 - Final results, writing paper
+\newline Friday April 4 - Presentation \newline Thursday April 10 - Final
+Report Due
+
+\section{Roles of Each Member}
+
+To be determined in the following week.
+
+
+\begin{thebibliography}{citations}
+
+\bibitem {McVicar:00}
+M. McVicar, et al:
+``Automatic Chord Estimation for Audio: A Review of the State of the Art,''
+{\it IEEE/ACM Transactions on Audio, Speech, and Language Processing},
+Vol.~22,No.~2, pp.~1-20, 2014.
+
+\bibitem{Ueda:01}
+Yushi Ueda, et al. :
+``HMM-Based Approach For Automatic Chord Detection Using Refined Acoustic
+Features,''
+{\it IEEE International Conference on Acoustics, Speech, and Signal
+Processing 2010},
+pp.~5518--5521, 2010.
+
+\bibitem{Varewyck:02}
+Matthias Varewyck, et al. :
+``A Novel Chroma Representation of Polyphonic Music based on Multiple Pitch
+Tracking Techniques,''
+{\it 16th ACM International Conference on Multimedia},
+2008.
+
+\bibitem{Lee:03}
+Kyogu Lee:
+``Automatic Chord Recognition from Audio Using Enhanced Pitch Class Profile,''
+{\it Center for Computer Research in Music and Acoustics, Stanford},
+2006.
+
+\bibitem{Papadopoulus:04}
+Hélène Papadopoulos and George Tzanetakis:
+``Modeling Chord and Key Structure With Markov Logic,''
+{\it 13th International Society for Music Information Retrieval Conference},
+pp. ~127-132, 2012.
+
+\bibitem{Richardson:05}
+Matthew Richardson and Pedro Domingos:
+``Markov Logic Networks,''
+{\it Department of Computer Science and Engineering, University of Washington,
+Seattle, WA},
+pp. ~1-43, 2006.
+
+\bibitem{SciKit:06}
+F. Pedregosa, et al.
+"Scikit-learn: Machine Learning in Python,"
+{\it Journal of Machine Learning Research},
+Vol.~12,pp.~2825-2830, 2011.
+
+\bibitem{Burgoyne:07}
+John Ashley Burgoyne, Jonathan Wild, and Ichiro Fujinaga
+"An Expert Gount-Truth Set For Audio Chord Recognition and Music Analysis,"
+{\it 12th International Society for Music Information Retrieval Conference},
+pp.~633-638, 2011.
+
+\bibitem{Burgoyne:08}
+Nanzhu Jiang et al.
+"Analyzing Chroma Feature Types for Automated Chord Recognition,"
+{\it AES 42nd International Conference },
+pp.~1-10, 2011.
+
+\end{thebibliography}
+
+%\bibliography{ismir2013template}
+
+\end{document}
+
