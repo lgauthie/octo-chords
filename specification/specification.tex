@@ -12,19 +12,6 @@
 % ------
 \title{CSC 475 Final Project: Design Specification}
 
-% Single address
-% To use with only one author or several with the same address
-% ---------------
-%\oneauthor
-% {Names should be omitted for double-blind reviewing}
-% {Affiliations should be omitted for double-blind reviewing}
-
-% Two addresses
-% --------------
-%\twoauthors
-% {First author} {School \\ Department}
-% {Second author} {Company \\ Address}
-
 % Three addresses
 % --------------
 \threeauthors
@@ -32,49 +19,87 @@
 {Robert Janzen} {\tt rjanzen@uvic.ca}
 {Sondra Moyls} {\tt smoyls@uvic.ca}
 
-% Four addresses
-% --------------
-%\fourauthors
-% {First author} {Affiliation1 \\ {\tt author1@ismir.edu}}
-% {Second author}{Affiliation2 \\ {\tt author2@ismir.edu}}
-% {Third author} {Affiliation3 \\ {\tt author3@ismir.edu}}
-% {Fourth author} {Affiliation4 \\ {\tt author4@ismir.edu}}
-
 \begin{document}
 %
 \maketitle
 %
 
-\section{Design Outline}\label{sec:desoutline}
-Our project aims to explore the effects of data preprocessing on the accuracy
-of chord recognition using hidden markov models. In particular, to what extent
-can the seperation of transient, hamonic, and melodic information can be used to
-improve chord recognition. Are one of both of these techniques more efficient
-for certain genres of music than for others? Previous research using these
-preprocessing techniques is discussed in \cite{McVicar:00}.
+\section{Abstract}\label{sec:desoutline}
+Our project aims to build an automatic chord recognition system using chroma vectors and supervised hidden markov 
+models. We will then compare the accuracy of the system given four sets of input data: unaltered audio files, audio 
+files with the background spectrum (transient elements) removed, audio files with removed harmonics (??? or is it 
+polyphonic voice extraction???), and audio data with both the background spectrum and harmonics removed. We will 
+also explore the success of using hidden markow models without chroma vectors, but by using voice extraction (???).
+
+Hidden Markov Models (HMMs) are currently the most common method for predicting chord labels, and also 
+produce high accuracy scores. Previous use of preprocessing of input data has also been explored and is
+summarized in \cite{McVicar:00}.
 
 \section{Tools}\label{sec:tools}
 
-For this project we will use the annotated Billboard data set. We will
-append genre information to the data for tests on individual genres. For data
-mining processes, we will use sci-kit. Feature extraction will be done using
-Marsyas and Python.
+\subsection{Data Set}
+
+For this project we will use the annotated Billboard 100 data set. This data set includes audio files for 
+approximately 650 audio files from the Billboard top 100 chart between the years 1958 and 1991, as well as text
+files containing the ground-truth for the chords on each beat interval\cite{Burgoyne:07}. The chords are labeled
+as either maj, min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present. For the scope of this
+project we will classify inverted chords and 7th chords as one of the 8 previously stated classes.
+
+\subsection{ACE Model}
+
+For data preprocessing we will use ??????. 
+
+Chroma vectors will be generated in accordance to the time intervals
+given in the ground truth using the spectra2chroma and chromaFilter marsystems (we will investigate which approach
+yields a better model).
+
+<<Voice stuff?????>>
+
+The output chroma vectors and the ground truth labels will be passed into an HMM function, available through
+sci-kit, and will be used to build a transition matrix. The HMM will have 74 states, one for each chord of each
+pitch class, plus the two non-chord states X and N. We will investigate further on the project how best
+to parse out training and testing data for the model.
+
+<<What does the output look like??? what do we get in the end???? What kinds of graphs??>
+
 
 \section{Proposed Timeline}\label{sec:timeline}
 
-Friday Feb 28 -- Read all relevant papers, retrieve existing code \newline
-Friday Mar 7 -- Start working on F0 extraction and transient removal, create
-more solid timeline \newline Friday Mar 14 -- Continue working on feature
-extraction, learning models, start progress report \newline Friday Mar 21 --
-Progress Report Due \newline Friday Mar 28 -- Final results, writing paper
-\newline Friday April 4 -- Presentation \newline Thursday April 10 -- Final
-Report Due
+March 10-16\newline
+Rewrite design specification. Continue reading papers and solidify project goals. Test out using Python 
+bindings with marsyas if haven't already.Start working on preprocessing and 
+manipulating the ground truth data to output chroma vectors\newline
+\newline
+
+March 17-23\newline
+Continue working on above.\newline
+\newline
+
+March 24-30\newline 
+Continue working on above. Start working towards writing progress report.\newline
+\newline
+
+March 31-April 6\newline
+Write progress report. Start working on getting the HMM classifier working.\newline
+\newline
+
+April 7 - April 13\newline
+Put everything together. Start outputting results for final paper/slides\newline
+\newline
+
+April 14 - April 21\newline
+Make presentation slides. un any final testing\newline
+\newline
+
+Tuesday April 22\newline
+Report due and class presentation.\newline
+\newline
 
 \section{Roles of Each Member}
 
-Robert -- Transient and harmonic separation \newline
-Lee -- Melody extraction \newline
-Sondra -- Data representation \newline
+Robert -- Preprocessing of audio data by removing background spectrum \newline
+Lee -- Voice extraction and modelling (?) \newline
+Sondra -- Build chroma vector model, work on setting up HMM output\newline
 
 \begin{thebibliography}{citations}
 
@@ -122,7 +147,7 @@ Vol.~12,pp.~2825-2830, 2011.
 
 \bibitem{Burgoyne:07}
 John Ashley Burgoyne, Jonathan Wild, and Ichiro Fujinaga
-"An Expert Gount-Truth Set For Audio Chord Recognition and Music Analysis,"
+"An Expert Gound-Truth Set For Audio Chord Recognition and Music Analysis,"
 {\it 12th International Society for Music Information Retrieval Conference},
 pp.~633-638, 2011.
 
@@ -150,23 +175,35 @@ Derry FitzGerald
 {\it Proc\. of the 13th Int. Conference on Digital Audio Effects (DAFx-10), Graz, Austria, September 6-10, 2010},
 pp.~1-4, 2010.
 
-\bibitem{Blunsom:11}
+\bibitem{Blunsom:12}
 Phil Blunsom
 "Hidden Markov Models"
 {\it Melbourne School of Engineering},
 pp.~1-7, 2004.
 
-\bibitem{Sumi:12}
+\bibitem{Sumi:13}
 Kouhei Sumi, KatsutoshiItoyama, Kazuyoshi Yoshii, Kazunori Komatani, Tetsuya Ogata, and Hiroshi G. Okuno
 "Automatic Chord Recognition Based on Probabilistic Integration of Chord Transition and Bass Pitch Estimation"
 {\it ISMIR 2008 - Session 1a - Harmony},
 pp.~39-44, 2008.
 
-\bibitem{Ryyananen:13}
+\bibitem{Ryyananen:14}
 Matti P. Ryyananen and Anssi P. Klapuri
 "Automatic Transcription of Melody, Bass Line, and Chords in Polyphonic Music"
 {\it Computer Music Journal, Volume 32, Number 3},
 pp.~72-86, Fall 2008.
+
+\bibitem{Lee:15}
+Kyogu Lee and Malcolm Stanley
+"Automatic Chord Recognition from Audio Using an HMM with Supervised Learning"
+{\it AMCMM '06},
+pp.~10-11, 2006.
+
+\bibitem{Papadopoulus:16}
+Hélène Papadopoulos and Geoffroy Peeters
+"Large-Scale Study of Chord Estimation Algorithms Based on Chroma Representation and HMM"
+{\it CBMI 2007},
+pp.~53-60, 2007.
 
 \end{thebibliography}
 
