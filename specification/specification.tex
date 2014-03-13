@@ -71,7 +71,13 @@ the billboard dataset.  We will experiement using the spectra2chroma and chromaF
 MarSystems. Which one yields better results will be investigated as part of the
 project.
 
-
+The second feature we will potentially experiment with is using extracted
+pitch contours instead of chroma vectors to train the models. Several voices could
+be extracted from an audio recording, and then used as training data. More research needs
+to be done to see if there are any models of voice extraction that would be feasible to
+implement in the given time frame. Once the contours have been extracted the system will
+check against the billboard data to find what chord is playing for each note of the melody.
+This chord to pitch data would the be used to train the HMM.
 
 % Define block style
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
