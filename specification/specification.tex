@@ -32,17 +32,12 @@
 
 \section{Abstract}\label{sec:desoutline}
 Our project aims to build an automatic chord recognition system using chroma
-vectors and supervised hidden Markov models. We will then compare the accuracy
+vectors and Hidden Markov Models. We will then compare the accuracy
 of the models built using several different sets of features. The first model
 will be built using chroma vectors extracted from unaltered audio files. The
 second model will be built using chroma vectors extracted from audio files with
 the transient elements removed. Time permitting, a third model will be created
 using automatic voice extraction in place of chroma vectors.
-
-Hidden Markov Models (HMMs) are currently the most common method for predicting
-chord labels, and also produce high accuracy scores. Previous use of
-preprocessing of input data has also been explored and is summarized in
-\cite{McVicar:00}. We plan to use HMMs to build our models.
 
 \section{Data Set}
 
@@ -50,9 +45,9 @@ For this project we will use the annotated Billboard 100 data set. This data
 set includes audio files for approximately 650 audio files from the Billboard
 top 100 chart between the years 1958 and 1991. Each song also includes beat by
 beat chord annotation\cite{Burgoyne:07}. The chords are labeled as either maj,
-min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present.
+min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present or detected.
 For the scope of this project we will not try to classify inverted chords and
-7th chords, and instead will classify them as one of the previously mentioned
+7th chords independently, and instead will classify them as one of the previously mentioned
 classes.
 
 \section{Pre-processing}
@@ -60,7 +55,7 @@ Audio will be pre processed by performing harmonic percussive source separation
 (HPSS). It has been noted that applying this pre processing step can greatly
 improve chord estimation accuracy\cite{Reed:09}.
 
-In a spectrogram the harmonic components of a musical signal usually has a
+In a spectrogram the harmonic components of a musical signal usually have a
 stable pitch and forms parallel ridges axis representing time. Transient sounds
 distribute their frequency content across the entire spectrum and occur during
 short time frames, which can be seen as spikes in the frequency axis. The end
@@ -72,7 +67,7 @@ generate chroma vectors.
 \section{Feature Extraction}
 
 Chroma vectors will be generated in accordance to the time intervals given in
-the billboard dataset.  We will use the spectra2chroma and chromaFilter
+the billboard dataset.  We experiement using the spectra2chroma and chromaFilter
 MarSystems. Which one yields better results will be investigated as part of the
 project.
 
@@ -106,8 +101,13 @@ project.
 
 \section{Hidden Markov Model}
 
+Hidden Markov Models (HMMs) are currently the most common method for predicting
+chord labels, and also produce high accuracy scores. Previous use of
+preprocessing of input data has also been explored and is summarized in
+\cite{McVicar:00}.
+
 The output chroma vectors and the ground truth labels will be passed into the
-hidden Markov model (HMM) function, available through sci-kit, and will be used
+hidden Markov model (HMM) function available through sci-kit, and will be used
 to build a transition matrix. The HMM will have 74 states, one for each chord
 of each pitch class, plus the two non-chord states X and N. We will investigate
 further on the project how best to parse out training and testing data for the
@@ -115,7 +115,7 @@ model.
 
 \section{Roles of Each Member}
 
-Robert working on the audio preprocessing (ie\. Transient removal).  Lee and
+Robert will work on the audio preprocessing (ie\. Transient removal).  Lee and
 Sondra will work on the system for extracting chroma vectors at the correct
 times, and feeding this data into the Hidden Markov Model. Time permitting a
 voice based extraction will be fed into the same model.
