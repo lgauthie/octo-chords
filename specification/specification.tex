@@ -8,6 +8,12 @@
 \usepackage{ismir2013,amsmath,cite}
 \usepackage{graphicx}
 
+% For Graphs
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usetikzlibrary{calc}
+\usepackage{caption}
+
 % Title.
 % ------
 \title{CSC 475 Final Project: Design Specification}
@@ -26,107 +32,133 @@
 
 \section{Abstract}\label{sec:desoutline}
 Our project aims to build an automatic chord recognition system using chroma
-vectors and supervised hidden markov models. We will then compare the accuracy
-of the system given four sets of input data: unaltered audio files, audio files
-with the background spectrum (transient elements) removed, audio files with
-removed harmonics (??? or is it polyphonic voice extraction???), and audio data
-with both the background spectrum and harmonics removed. We will also explore
-the success of using hidden markow models without chroma vectors, but by using
-voice extraction (???).
+vectors and supervised hidden Markov models. We will then compare the accuracy
+of the models built using several different sets of features. The first model
+will be built using chroma vectors extracted from unaltered audio files. The
+second model will be built using chroma vectors extracted from audio files with
+the transient elements removed. Time permitting, a third model will be created
+using automatic voice extraction in place of chroma vectors.
 
 Hidden Markov Models (HMMs) are currently the most common method for predicting
 chord labels, and also produce high accuracy scores. Previous use of
 preprocessing of input data has also been explored and is summarized in
-\cite{McVicar:00}.
+\cite{McVicar:00}. We plan to use HMMs to build our models.
 
-\section{Tools}\label{sec:tools}
-
-Talk about marsyas, scikit and other code we might berrow, also..python.
-
-\subsection{Data Set}
+\section{Data Set}
 
 For this project we will use the annotated Billboard 100 data set. This data
 set includes audio files for approximately 650 audio files from the Billboard
-top 100 chart between the years 1958 and 1991, as well as text files containing
-the ground-truth for the chords on each beat interval\cite{Burgoyne:07}. The
-chords are labeled as either maj, min, aug, dim, sus2, sus4, X, or N, where X
-and N imply no chord is present. For the scope of this project we will classify
-inverted chords and 7th chords as one of the 8 previously stated classes.
+top 100 chart between the years 1958 and 1991. Each song also includes beat by
+beat chord annotation\cite{Burgoyne:07}. The chords are labeled as either maj,
+min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present.
+For the scope of this project we will not try to classify inverted chords and
+7th chords, and instead will classify them as one of the previously mentioned
+classes.
 
-\section{Automatic Chord Estimation}
-
-\subsection{Pre-processing}
+\section{Pre-processing}
 Audio will be pre processed by performing harmonic percussive source separation
-(HPSS). It has been noted by several researchers including \cite{Reed:09}, that
-applying this pre processing step can greatly improve chord estimation
-accuracy. In a spectrogram the harmonic components of a musical signal usually
-have a stable pitch and forms parallel ridges along the horizontal axis.
-Percussive sounds distrubute their frequency content across the entire spectrum
-and occur during short time trames, which can be seen along the vertical axis.
-The end product of HPSS is two signals, one with mostly harmonic content, the
-other with percussive sounds which is obtained by complementary diffusion on
-the spectrogram.
+(HPSS). It has been noted that applying this pre processing step can greatly
+improve chord estimation accuracy\cite{Reed:09}.
 
+In a spectrogram the harmonic components of a musical signal usually has a
+stable pitch and forms parallel ridges axis representing time. Transient sounds
+distribute their frequency content across the entire spectrum and occur during
+short time frames, which can be seen as spikes in the frequency axis. The end
+product of HPSS is two signals, one with mostly harmonic content, the other
+with percussive sounds which is obtained by complementary diffusion on the
+spectrogram. The second stage of our project will use the harmonic content to
+generate chroma vectors.
 
-\subsection{Feature Extraction}
+\section{Feature Extraction}
 
 Chroma vectors will be generated in accordance to the time intervals given in
-the ground truth using the spectra2chroma and chromaFilter marsystems (we will
-investigate which approach yields a better model).
+the billboard dataset.  We will use the spectra2chroma and chromaFilter
+MarSystems. Which one yields better results will be investigated as part of the
+project.
 
-\subsection{Hidden Markov Model}
+% Define block style
+\tikzstyle{block} = [rectangle, draw, fill=blue!20,
+    text width=7em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
 
-<<Voice stuff?????>>
+\begin{figure}
+\begin{tikzpicture}[node distance=3cm]
+    % Place nodes
+    \node [block] (init) {Billboard Data Set};
+    \node [block, below left of= init] (chordlabel) {Labeled Chords By Beat (.txt)};
+    \node [block, below right of= init] (audio) {Audio (.wav)};
+    \node [block, below of= chordlabel] (chordname) {Chord Names at Beat Times};
+    \node [block, below of= audio] (chroma) {12-bin chroma features};
+    \coordinate (Middle) at ($(chordlabel)!0.5!(chroma)$);
+    \node [block, below of  =Middle, yshift=-1cm] (hmm) {HMM};
+    \node [below of  =Middle] (train) {Training};
+    % Draw edges
+    \path [line] (init) -- (audio);
+    \path [line] (init) -- (chordlabel);
+    \path [line] (chordlabel) -- node {Analyze Groud Truth} (chordname);
+    \path [line] (audio) -- node {Analyze Chroma} (chroma);
+    \path [line] (chroma) -- (hmm);
+    \path [line] (chordname) -- (hmm);
 
-The output chroma vectors and the ground truth labels will be passed into an
-hidden markov model (HMM) function, available through sci-kit, and will be used
+\end{tikzpicture}
+\caption{System Overview}
+\end{figure}
+
+\section{Hidden Markov Model}
+
+The output chroma vectors and the ground truth labels will be passed into the
+hidden Markov model (HMM) function, available through sci-kit, and will be used
 to build a transition matrix. The HMM will have 74 states, one for each chord
 of each pitch class, plus the two non-chord states X and N. We will investigate
 further on the project how best to parse out training and testing data for the
 model.
 
-<<What does the output look like??? what do we get in the end???? What kinds of
-graphs??>
+\section{Roles of Each Member}
+
+Robert working on the audio preprocessing (ie\. Transient removal).  Lee and
+Sondra will work on the system for extracting chroma vectors at the correct
+times, and feeding this data into the Hidden Markov Model. Time permitting a
+voice based extraction will be fed into the same model.
 
 \section{Proposed Timeline}\label{sec:timeline}
 
 March 10-16\newline
 Rewrite design specification. Continue reading papers and solidify project
-goals. Test out using Python bindings with marsyas if haven't already.Start
+goals. Test out using Python bindings with Marsyas if haven't already. Start
 working on preprocessing and manipulating the ground truth data to output
-chroma vectors\newline
+chroma vectors
+\newline
 \newline
 
 March 17-23\newline
-Continue working on above.\newline
+Continue working on above.
+\newline
 \newline
 
 March 24-30\newline
-Continue working on above. Start working towards writing progress report.\newline
+Continue working on above. Start working towards writing progress report.
+\newline
 \newline
 
 March 31-April 6\newline
-Write progress report. Start working on getting the HMM classifier working.\newline
+Write progress report. Start working on getting the HMM classifier working.
+\newline
 \newline
 
 April 7 - April 13\newline
-Put everything together. Start outputting results for final paper/slides\newline
+Put everything together. Start outputting results for final paper/slides
+\newline
 \newline
 
 April 14 - April 21\newline
-Make presentation slides\. un any final testing\newline
+Make presentation slides. Finish any final testing.
+\newline
 \newline
 
 Tuesday April 22\newline
-Report due and class presentation.\newline
+Report due and class presentation.
 \newline
-
-\section{Roles of Each Member}
-
-Robert -- Preprocessing of audio data by removing background spectrum \newline
-Lee -- Voice extraction and modelling\newline
-Sondra -- Build chroma vector model, work on setting up HMM output\newline
-
+\newline
 
 \begin{thebibliography}{citations}
 
