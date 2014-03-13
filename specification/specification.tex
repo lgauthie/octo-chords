@@ -45,17 +45,27 @@ files containing the ground-truth for the chords on each beat interval\cite{Burg
 as either maj, min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present. For the scope of this
 project we will classify inverted chords and 7th chords as one of the 8 previously stated classes.
 
-\subsection{ACE Model}
+\Section{Automatic Chord Estimation
 
-For data preprocessing we will use ??????. 
+\subsection{Pre-processing}
+Audio will be pre processed by performing harmonic percussive source separation (HPSS). It has been noted by several researchers including \cite{Reed:09}, that applying
+this pre processing step can greatly improve chord estimation accuracy. In a spectrogram the harmonic components of a musical signal
+usually have a stable pitch and forms parallel ridges along the horizontal axis. Percussive sounds distrubute their frequency content across the
+entire spectrum and occur during short time trames, which can be seen along the vertical axis. The end product of HPSS is two signals,
+one with mostly harmonic content, the other with percussive sounds which is obtained by
+complementary diffusion on the spectrogram.
 
-Chroma vectors will be generated in accordance to the time intervals
-given in the ground truth using the spectra2chroma and chromaFilter marsystems (we will investigate which approach
+
+\subsection{Feature Extraction}
+
+Chroma vectors will be generated in accordance to the time intervals given in the ground truth using the spectra2chroma and chromaFilter marsystems (we will investigate which approach
 yields a better model).
+
+\subsection{Hidden Markov Model}
 
 <<Voice stuff?????>>
 
-The output chroma vectors and the ground truth labels will be passed into an HMM function, available through
+The output chroma vectors and the ground truth labels will be passed into an hidden markov model (HMM) function, available through
 sci-kit, and will be used to build a transition matrix. The HMM will have 74 states, one for each chord of each
 pitch class, plus the two non-chord states X and N. We will investigate further on the project how best
 to parse out training and testing data for the model.
@@ -98,7 +108,7 @@ Report due and class presentation.\newline
 \section{Roles of Each Member}
 
 Robert -- Preprocessing of audio data by removing background spectrum \newline
-Lee -- Voice extraction and modelling (?) \newline
+Lee -- Voice extraction and modelling\newline
 Sondra -- Build chroma vector model, work on setting up HMM output\newline
 
 \begin{thebibliography}{citations}
