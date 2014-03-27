@@ -64,6 +64,19 @@ with percussive sounds which is obtained by complementary diffusion on the
 spectrogram. The second stage of our project will use the harmonic content to
 generate chroma vectors.
 
+The constant-Q transformation can be used to achieve better frequency resolution 
+in the low end and greater time resolution for high frequencies. This can be a useful 
+step before performing median filtering during harmonic percussive source separation. 
+Unfortunately the inverse transform does not allow for perfect reconstruction but the 
+authors Klapuri and Schorkhuber have achieved a reasonable-quality inverse by using the 
+conjugate transpose of the CQT kernel.
+
+For our purposes, and with our coding expertise, it may be more feasible to accept 
+some loss of separation accuracy by using a regular fourier transformation before the 
+median filtering step. Fortunately both Python (scipy) and Matlab contain methods for 
+fourier transforms and median filtering, which should allow us to start working with 
+the HMM faster.
+
 \section{Feature Extraction}
 
 Chroma vectors will be generated in accordance to the time intervals given in
