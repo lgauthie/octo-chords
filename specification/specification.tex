@@ -39,6 +39,14 @@ second model will be built using chroma vectors extracted from audio files with
 the transient elements removed. Time permitting, a third model will be created
 using automatic voice extraction in place of chroma vectors.
 
+\section{Introduction}\label{sec:intro}
+
+Automatic chord detection has many uses including audio transcription, harmonic 
+analysis of compositions. It is also useful for content-based music retrival, for
+example cover song detection is often based on chord progressions \cite{Papadopoulos:18}. 
+Manual annotation of chord content is a very time consuming process, especially when
+there is no accompanying symbolic score.
+
 \section{Data Set}
 
 For this project we will use the annotated Billboard 100 data set. This data
@@ -63,19 +71,6 @@ product of HPSS is two signals, one with mostly harmonic content, the other
 with percussive sounds which is obtained by complementary diffusion on the
 spectrogram. The second stage of our project will use the harmonic content to
 generate chroma vectors.
-
-The constant-Q transformation can be used to achieve better frequency resolution 
-in the low end and greater time resolution for high frequencies. This can be a useful 
-step before performing median filtering during harmonic percussive source separation. 
-Unfortunately the inverse transform does not allow for perfect reconstruction but the 
-authors Klapuri and Schorkhuber have achieved a reasonable-quality inverse by using the 
-conjugate transpose of the CQT kernel.
-
-For our purposes, and with our coding expertise, it may be more feasible to accept 
-some loss of separation accuracy by using a regular fourier transformation before the 
-median filtering step. Fortunately both Python (scipy) and Matlab contain methods for 
-fourier transforms and median filtering, which should allow us to start working with 
-the HMM faster.
 
 \section{Feature Extraction}
 
@@ -169,12 +164,39 @@ Report due and class presentation.
 
 \section{Progress Report}\label{sec:progreport}
 
+We have started reading more in depth into the problem of audiomatic chord detection using
+HMMs and HPSS. In particular, \cite{Ueda:19} discusses a model very similar to our goals. 
+Using the Beatles annotated data set, a 74.24 percent chord recognition rate was 
+achieved without HPSS, and a 78.48 percent chord recognition rate was achieved with it. This
+is not a trival increase in success, and suggests we should should see higher rates of
+accuracy when the HPSS algorithm is applied to the incoming audio. Another step used in this paper
+that we have not currently considered is the implementation of a tuning compensation step. Because
+tuning pitch may differ between recordings, we may need to consider different candidate chroma vectors.
+\cite{McVicar:00} suggests that tuning using Harte's tuning algorithm is a staple of most modern algorithms.
+Some older papers such as \cite{Zenz:20} mention mistuning of the human voice as well as percussive sounds as sources
+of classification error, so tuning algorithms may be worth investigating in addition to HPSS.
 
-===
--- readings, changes in design
--- problems with python and changing frame size in marsyas
--- progess on HPSS
-====
+We've began writing code to extra the chroma information for the songs in our dataset using Marsyas 
+with python bindings. We are able to extra chromas for a fixed window size; however, when using a changing
+window size (where the windows correspond to the beat times in our annotated data set), we've run into
+problems with how the program is handling memory information.... [INSERT CURRENT RESOLUTION! OR PROPOSED ONE]
+
+[UPDATE THIS BELOW re: USING MATLAB, CODE SOURCES, ETC]
+In working on the HPSS algorithm, we're found that the constant-Q transformation can be used to achieve 
+better frequency resolution in the low end and greater time resolution for high frequencies. This can be 
+a useful step before performing median filtering during harmonic percussive source separation. 
+Unfortunately the inverse transform does not allow for perfect reconstruction but the 
+authors Klapuri and Schorkhuber [MISSING CITATION] have achieved a reasonable-quality inverse by using the 
+conjugate transpose of the CQT kernel.
+
+For our purposes, and with our coding expertise, it may be more feasible to accept 
+some loss of separation accuracy by using a regular fourier transformation before the 
+median filtering step. Fortunately both Python (scipy) and Matlab contain methods for 
+fourier transforms and median filtering, which should allow us to start working with 
+the HMM faster.
+
+We've continued to investigate and test the HMM algorithm available in Sci-kit learn, but have not
+yet applied it to chroma data.
 
 \begin{thebibliography}{citations}
 
@@ -287,6 +309,24 @@ Justin Salamon and Emilia G{\'o}mez
 "Melody Extraction from Polyphonic Music Signals using Pitch Contour Characteristics"
 {\it IEEE Transactions on Audio, Speech and Language Processing}
 pp.~1759-1770, 2012.
+
+\bibitem{Papadopoulos:18}
+Hélène Papadopoulos and Geoffroy Peeters
+"Joint Estimation of Chords and Downbeats From an Audio Signal"
+{\it IEEE Transactions on Audio, Speech and Language Processing, Vol. 19, No.1}
+January 2011.
+
+\bibitem{Ueda:19}
+Yushi Ueda, Yuki Uchiyama, Takuya Nichimoto, Nobutaka Ono and Shigeki Sagayama
+"HMM-Based Approach for Automatic Chord Detection Using Refined Acoustic Features"
+{\it IEEE Transactions on Audio, Speech and Language Processing}
+pp. ~5518-5521, 2010.
+
+\bibitem{Zenz:20}
+Veronika Zenz and Andrea Rauber
+"Automatic Chord Detection Incorporating Beat and Key Detection"
+{\it IEEE International Conference on Signal Processing and Communicationg}
+pp. ~1175-1178, 2007.
 
 
 \end{thebibliography}
