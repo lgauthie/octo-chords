@@ -176,24 +176,23 @@ tuning pitch may differ between recordings, we may need to consider different ca
 Some older papers such as \cite{Zenz:20} mention mistuning of the human voice as well as percussive sounds as sources
 of classification error, so tuning algorithms may be worth investigating in addition to HPSS.
 
-We've began writing code to extra the chroma information for the songs in our dataset using Marsyas 
-with python bindings. We are able to extra chromas for a fixed window size; however, when using a changing
+We've began writing code to extract the chroma information for the songs in our dataset using Marsyas 
+with python bindings. We are able to extract chromas for a fixed window size; however, when using a changing
 window size (where the windows correspond to the beat times in our annotated data set), we've run into
 problems with how the program is handling memory information.... [INSERT CURRENT RESOLUTION! OR PROPOSED ONE]
 
 [UPDATE THIS BELOW re: USING MATLAB, CODE SOURCES, ETC]
 In working on the HPSS algorithm, we're found that the constant-Q transformation can be used to achieve 
 better frequency resolution in the low end and greater time resolution for high frequencies. This can be 
-a useful step before performing median filtering during harmonic percussive source separation. 
+a useful step before performing median filtering during harmonic percussive source separation.
 Unfortunately the inverse transform does not allow for perfect reconstruction but the 
-authors Klapuri and Schorkhuber [MISSING CITATION] have achieved a reasonable-quality inverse by using the 
+authors Klapuri and Schorkhuber \cite{Schorkhuber:21} have achieved a reasonable-quality inverse by using the 
 conjugate transpose of the CQT kernel.
 
-For our purposes, and with our coding expertise, it may be more feasible to accept 
-some loss of separation accuracy by using a regular fourier transformation before the 
-median filtering step. Fortunately both Python (scipy) and Matlab contain methods for 
-fourier transforms and median filtering, which should allow us to start working with 
-the HMM faster.
+The matlab code we have enables us to extract the MFCCs of the harmonic portion of the signal
+after a normalized CQT and median filtering step. The CQT implementation we have does not include an inverse
+transform so we won't be able to hear the separation, however the features we extract are sufficient for the machine learning 
+portion of our project. For comparison we will also use Marsyas to perform an FFT, median filtering, and MFCC feature extraction.
 
 We've continued to investigate and test the HMM algorithm available in Sci-kit learn, but have not
 yet applied it to chroma data.
@@ -327,6 +326,12 @@ Veronika Zenz and Andrea Rauber
 "Automatic Chord Detection Incorporating Beat and Key Detection"
 {\it IEEE International Conference on Signal Processing and Communicationg}
 pp. ~1175-1178, 2007.
+
+\bibitem{Schorkhuber:21}
+Christian Schorkhuber and Anssi Kalpuri
+"Constant-Q Transform Toolbox for Music Processing"
+{\it 7th Sound and Music Computing Conference, Barcelona, Spain}
+July 2010.
 
 
 \end{thebibliography}
