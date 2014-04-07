@@ -192,7 +192,7 @@ conjugate transpose of the CQT kernel.
 The matlab code we have enables us to extract the MFCCs of the harmonic portion of the signal
 after a normalized CQT and median filtering step. The CQT implementation we have does not include an inverse
 transform so we won't be able to hear the separation, however the features we extract are sufficient for the machine learning 
-portion of our project. For comparison we will also use Marsyas to perform an FFT, median filtering, and MFCC feature extraction.
+portion of our project. For comparison we will also use Marsyas to do median filtering after an FFT, and feature extraction.
 
 We've continued to investigate and test the HMM algorithm available in Sci-kit learn, but have not
 yet applied it to chroma data.
