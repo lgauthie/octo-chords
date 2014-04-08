@@ -7,7 +7,6 @@ import sys
 fn = sys.argv[1] # Filename, use mono wav
 Fs = 44100.0     # Sampling rate
 
-# Use BeatTimesSink ?
 hpss = ["Series/hpss", ["SoundFileSource/src", "Gain/gain", "Spectrum/spec", "MedianFilter/mf"]]
 hpss_net = create(hpss)
 hpss_net.linkControl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename")
