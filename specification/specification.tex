@@ -164,7 +164,7 @@ Report due and class presentation.
 
 \section{Progress Report}\label{sec:progreport}
 
-We have started reading more in depth into the problem of audiomatic chord detection using
+We have started reading more in depth into the problem of automatic chord detection using
 HMMs and HPSS. In particular, \cite{Ueda:19} discusses a model very similar to our goals. 
 Using the Beatles annotated data set, a 74.24 percent chord recognition rate was 
 achieved without HPSS, and a 78.48 percent chord recognition rate was achieved with it. This
@@ -179,7 +179,13 @@ of classification error, so tuning algorithms may be worth investigating in addi
 We've began writing code to extract the chroma information for the songs in our dataset using Marsyas 
 with python bindings. We are able to extract chromas for a fixed window size; however, when using a changing
 window size (where the windows correspond to the beat times in our annotated data set), we've run into
-problems with how the program is handling memory information.... [INSERT CURRENT RESOLUTION! OR PROPOSED ONE]
+problems with memory allocations in Marsyas. Our current hunches are that either one of the MarSystem constructors
+is trying to free a buffer that has already been freed, or that there is some subtle memory issues with
+the way the marsyas python bindings are interacting with the python garbage collector. Right now the direct
+plan of attack is to re-write the chroma extraction system directly in C++ to rule out the bindings
+being the problem. That will also give easier access to Valgrind/GDB to look into the problem further.
+If that still fails our final backup is to just segment the audio in python, and feed it
+into our extraction system using the RealvecSource, allowing us to keep a constant buffer size.
 
 [UPDATE THIS BELOW re: USING MATLAB, CODE SOURCES, ETC]
 In working on the HPSS algorithm, we're found that the constant-Q transformation can be used to achieve 
