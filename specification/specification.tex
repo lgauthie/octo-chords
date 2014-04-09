@@ -32,17 +32,15 @@
 
 \section{Abstract}\label{sec:desoutline}
 Our project aims to build an automatic chord recognition system using chroma
-vectors and Hidden Markov Models. We will then compare the accuracy
-of the models built using several different sets of features. The first model
-will be built using chroma vectors extracted from unaltered audio files. The
-second model will be built using chroma vectors extracted from audio files with
-the transient elements removed. Time permitting, a third model will be created
-using automatic voice extraction in place of chroma vectors.
+vectors and Hidden Markov Models. Two sets of audio data will be compared: the
+first, unaltered, the second with the transient elements removed using the HPSS
+algorithm. We will also compare extracting the chroma vectors at regular sample
+intervals and at beats in the audio.
 
 \section{Introduction}\label{sec:intro}
 
 Automatic chord detection has many uses including audio transcription, harmonic
-analysis of compositions. It is also useful for content-based music retrival,
+analysis of compositions. It is also useful for content-based music retrieval,
 for example cover song detection is often based on chord progressions
 \cite{Papadopoulos:18}.  Manual annotation of chord content is a very time
 consuming process, especially when there is no accompanying symbolic score.
@@ -75,18 +73,8 @@ generate chroma vectors.
 \section{Feature Extraction}
 
 Chroma vectors will be generated in accordance to the time intervals given in
-the billboard dataset.  We will experiement using the spectra2chroma and
-chromaFilter MarSystems. Which one yields better results will be investigated
-as part of the project.
-
-The second feature we will potentially experiment with is using extracted pitch
-contours instead of chroma vectors to train the models. Several voices could be
-extracted from an audio recording, and then used as training data. More
-research needs to be done to see if there are any models of voice extraction
-that would be feasible to implement in the given time frame. Once the contours
-have been extracted the system will check against the billboard data to find
-what chord is playing for each note of the melody.  This chord to pitch data
-would the be used to train the HMM.
+the billboard dataset.  We will experiment use the spectra2chroma MarSystem.
+Which one yields better results will be investigated as part of the project.
 
 % Define block style
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
@@ -130,16 +118,9 @@ of each pitch class, plus the two non-chord states X and N. We will investigate
 further on the project how best to parse out training and testing data for the
 model.
 
-\section{Roles of Each Member}
-
-Robert will work on the audio preprocessing (ie\. Transient removal).  Lee and
-Sondra will work on the system for extracting chroma vectors at the correct
-times, and feeding this data into the Hidden Markov Model. Time permitting a
-voice based extraction will be fed into the same model.
-
-
 \section{Progress Report}\label{sec:progreport}
 
+\subsection{Further research}
 We have started reading more in depth into the problem of automatic chord
 detection using HMMs and HPSS. In particular, \cite{Ueda:19} discusses a model
 very similar to our goals.  Using the Beatles annotated data set, a 74.24
@@ -327,19 +308,18 @@ January 2011.
 Yushi Ueda, Yuki Uchiyama, Takuya Nichimoto, Nobutaka Ono and Shigeki Sagayama
 "HMM-Based Approach for Automatic Chord Detection Using Refined Acoustic Features"
 {\it IEEE Transactions on Audio, Speech and Language Processing}
-pp. ~5518-5521, 2010.
+pp.~5518-5521, 2010.
 
 \bibitem{Zenz:20}
 Veronika Zenz and Andrea Rauber
 "Automatic Chord Detection Incorporating Beat and Key Detection"
 {\it IEEE International Conference on Signal Processing and Communicationg}
-pp. ~1175-1178, 2007.
+pp.~1175-1178, 2007.
 
 \bibitem{Schorkhuber:21}
 Christian Schorkhuber and Anssi Kalpuri
-"Constant-Q Transform Toolbox for Music Processing"
-{\it 7th Sound and Music Computing Conference, Barcelona, Spain}
-July 2010.
+"Constant-Q Transform Toolbox for Music Processing" {\it 7th Sound and Music
+Computing Conference, Barcelona, Spain} July 2010.
 
 
 \end{thebibliography}
