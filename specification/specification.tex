@@ -41,11 +41,11 @@ using automatic voice extraction in place of chroma vectors.
 
 \section{Introduction}\label{sec:intro}
 
-Automatic chord detection has many uses including audio transcription, harmonic 
-analysis of compositions. It is also useful for content-based music retrival, for
-example cover song detection is often based on chord progressions \cite{Papadopoulos:18}. 
-Manual annotation of chord content is a very time consuming process, especially when
-there is no accompanying symbolic score.
+Automatic chord detection has many uses including audio transcription, harmonic
+analysis of compositions. It is also useful for content-based music retrival,
+for example cover song detection is often based on chord progressions
+\cite{Papadopoulos:18}.  Manual annotation of chord content is a very time
+consuming process, especially when there is no accompanying symbolic score.
 
 \section{Data Set}
 
@@ -53,39 +53,40 @@ For this project we will use the annotated Billboard 100 data set. This data
 set includes audio files for approximately 650 audio files from the Billboard
 top 100 chart between the years 1958 and 1991. Each song also includes beat by
 beat chord annotation\cite{Burgoyne:07}. The chords are labeled as either maj,
-min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present or detected.
-For the scope of this project we will not try to classify inverted chords and
-7th chords independently, and instead will classify them as one of the previously mentioned
-classes.
+min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present or
+detected.  For the scope of this project we will not try to classify inverted
+chords and 7th chords independently, and instead will classify them as one of
+the previously mentioned classes.
 
 \section{Pre-processing}
 Audio will be pre processed by performing harmonic percussive source separation
 (HPSS). It has been noted that applying this pre processing step can greatly
 improve chord estimation accuracy\cite{Reed:09}.
 
-In a spectrogram the harmonic components of a musical signal have a
-stable pitch and form parallel ridges along the time axis. Transient sounds
-distribute their frequency content across the entire spectrum and occur during
-short time frames, which can be seen as spikes in the frequency axis. The end
-product of HPSS is two signals, one with mostly harmonic content, the other
-with percussive sounds which is obtained by complementary diffusion on the
+In a spectrogram the harmonic components of a musical signal have a stable
+pitch and form parallel ridges along the time axis. Transient sounds distribute
+their frequency content across the entire spectrum and occur during short time
+frames, which can be seen as spikes in the frequency axis. The end product of
+HPSS is two signals, one with mostly harmonic content, the other with
+percussive sounds which is obtained by complementary diffusion on the
 spectrogram. The second stage of our project will use the harmonic content to
 generate chroma vectors.
 
 \section{Feature Extraction}
 
 Chroma vectors will be generated in accordance to the time intervals given in
-the billboard dataset.  We will experiement using the spectra2chroma and chromaFilter
-MarSystems. Which one yields better results will be investigated as part of the
-project.
+the billboard dataset.  We will experiement using the spectra2chroma and
+chromaFilter MarSystems. Which one yields better results will be investigated
+as part of the project.
 
-The second feature we will potentially experiment with is using extracted
-pitch contours instead of chroma vectors to train the models. Several voices could
-be extracted from an audio recording, and then used as training data. More research needs
-to be done to see if there are any models of voice extraction that would be feasible to
-implement in the given time frame. Once the contours have been extracted the system will
-check against the billboard data to find what chord is playing for each note of the melody.
-This chord to pitch data would the be used to train the HMM.
+The second feature we will potentially experiment with is using extracted pitch
+contours instead of chroma vectors to train the models. Several voices could be
+extracted from an audio recording, and then used as training data. More
+research needs to be done to see if there are any models of voice extraction
+that would be feasible to implement in the given time frame. Once the contours
+have been extracted the system will check against the billboard data to find
+what chord is playing for each note of the melody.  This chord to pitch data
+would the be used to train the HMM.
 
 % Define block style
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
@@ -142,8 +143,7 @@ voice based extraction will be fed into the same model.
 Rewrite design specification. Continue reading papers and solidify project
 goals. Test out using Python bindings with Marsyas if haven't already. Start
 working on preprocessing and manipulating the ground truth data to output
-chroma vectors
-\newline
+chroma vectors \newline
 {\bf March 17-23}\newline
 Continue working on above.
 \newline
@@ -164,44 +164,55 @@ Report due and class presentation.
 
 \section{Progress Report}\label{sec:progreport}
 
-We have started reading more in depth into the problem of automatic chord detection using
-HMMs and HPSS. In particular, \cite{Ueda:19} discusses a model very similar to our goals. 
-Using the Beatles annotated data set, a 74.24 percent chord recognition rate was 
-achieved without HPSS, and a 78.48 percent chord recognition rate was achieved with it. This
-is not a trival increase in success, and suggests we should should see higher rates of
-accuracy when the HPSS algorithm is applied to the incoming audio. Another step used in this paper
-that we have not currently considered is the implementation of a tuning compensation step. Because
-tuning pitch may differ between recordings, we may need to consider different candidate chroma vectors.
-\cite{McVicar:00} suggests that tuning using Harte's tuning algorithm is a staple of most modern algorithms.
-Some older papers such as \cite{Zenz:20} mention mistuning of the human voice as well as percussive sounds as sources
-of classification error, so tuning algorithms may be worth investigating in addition to HPSS.
+We have started reading more in depth into the problem of automatic chord
+detection using HMMs and HPSS. In particular, \cite{Ueda:19} discusses a model
+very similar to our goals.  Using the Beatles annotated data set, a 74.24
+percent chord recognition rate was achieved without HPSS, and a 78.48 percent
+chord recognition rate was achieved with it. This is not a trival increase in
+success, and suggests we should should see higher rates of accuracy when the
+HPSS algorithm is applied to the incoming audio. Another step used in this
+paper that we have not currently considered is the implementation of a tuning
+compensation step. Because tuning pitch may differ between recordings, we may
+need to consider different candidate chroma vectors.  \cite{McVicar:00}
+suggests that tuning using Harte's tuning algorithm is a staple of most modern
+algorithms.  Some older papers such as \cite{Zenz:20} mention mistuning of the
+human voice as well as percussive sounds as sources of classification error, so
+tuning algorithms may be worth investigating in addition to HPSS.
 
-We've began writing code to extract the chroma information for the songs in our dataset using Marsyas 
-with python bindings. We are able to extract chromas for a fixed window size; however, when using a changing
-window size (where the windows correspond to the beat times in our annotated data set), we've run into
-problems with memory allocations in Marsyas. Our current hunches are that either one of the MarSystem constructors
-is trying to free a buffer that has already been freed, or that there is some subtle memory issues with
-the way the marsyas python bindings are interacting with the python garbage collector. Right now the direct
-plan of attack is to re-write the chroma extraction system directly in C++ to rule out the bindings
-being the problem. That will also give easier access to Valgrind/GDB to look into the problem further.
-If that still fails our final backup is to just segment the audio in python, and feed it
-into our extraction system using the RealvecSource, allowing us to keep a constant buffer size.
+We've began writing code to extract the chroma information for the songs in our
+dataset using Marsyas with python bindings. We are able to extract chromas for
+a fixed window size; however, when using a changing window size (where the
+windows correspond to the beat times in our annotated data set), we've run into
+problems with memory allocations in Marsyas. Our current hunches are that
+either one of the MarSystem constructors is trying to free a buffer that has
+already been freed, or that there is some subtle memory issues with the way the
+marsyas python bindings are interacting with the python garbage collector.
+Right now the direct plan of attack is to re-write the chroma extraction system
+directly in C++ to rule out the bindings being the problem. That will also give
+easier access to Valgrind/GDB to look into the problem further.  If that still
+fails our final backup is to just segment the audio in python, and feed it into
+our extraction system using the RealvecSource, allowing us to keep a constant
+buffer size.
 
 [UPDATE THIS BELOW re: USING MATLAB, CODE SOURCES, ETC]
-In working on the HPSS algorithm, we're found that the constant-Q transformation can be used to achieve 
-better frequency resolution in the low end and greater time resolution for high frequencies. This can be 
-a useful step before performing median filtering during harmonic percussive source separation.
-Unfortunately the inverse transform does not allow for perfect reconstruction but the 
-authors Klapuri and Schorkhuber \cite{Schorkhuber:21} have achieved a reasonable-quality inverse by using the 
-conjugate transpose of the CQT kernel.
+In working on the HPSS algorithm, we're found that the constant-Q
+transformation can be used to achieve better frequency resolution in the low
+end and greater time resolution for high frequencies. This can be a useful step
+before performing median filtering during harmonic percussive source
+separation.  Unfortunately the inverse transform does not allow for perfect
+reconstruction but the authors Klapuri and Schorkhuber \cite{Schorkhuber:21}
+have achieved a reasonable-quality inverse by using the conjugate transpose of
+the CQT kernel.
 
-The matlab code we have enables us to extract the MFCCs of the harmonic portion of the signal
-after a normalized CQT and median filtering step. The CQT implementation we have does not include an inverse
-transform so we won't be able to hear the separation, however the features we extract are sufficient for the machine learning 
-portion of our project. For comparison we will also use Marsyas to do median filtering after an FFT, and feature extraction.
+The matlab code we have enables us to extract the MFCCs of the harmonic portion
+of the signal after a normalized CQT and median filtering step. The CQT
+implementation we have does not include an inverse transform so we won't be
+able to hear the separation, however the features we extract are sufficient for
+the machine learning portion of our project. For comparison we will also use
+Marsyas to do median filtering after an FFT, and feature extraction.
 
-We've continued to investigate and test the HMM algorithm available in Sci-kit learn, but have not
-yet applied it to chroma data.
+We've continued to investigate and test the HMM algorithm available in Sci-kit
+learn, but have not yet applied it to chroma data.
 
 \begin{thebibliography}{citations}
 
