@@ -170,12 +170,10 @@ fails our final backup is to just segment the audio in python, and feed it into
 our extraction system using the RealvecSource, allowing us to keep a constant
 buffer size.
 
-[UPDATE THIS BELOW re: USING MATLAB, CODE SOURCES, ETC]
-In working on the HPSS algorithm, we're found that the constant-Q
+While working on harmonic percussive source separation, we've found that the constant-Q
 transformation can be used to achieve better frequency resolution in the low
 end and greater time resolution for high frequencies. This can be a useful step
-before performing median filtering during harmonic percussive source
-separation.  Unfortunately the inverse transform does not allow for perfect
+before performing median filtering. Unfortunately the inverse transform does not allow for perfect
 reconstruction but the authors Klapuri and Schorkhuber \cite{Schorkhuber:21}
 have achieved a reasonable-quality inverse by using the conjugate transpose of
 the CQT kernel.
@@ -183,7 +181,7 @@ the CQT kernel.
 Our feature extraction model requires that our bins are time aligned to the chord changes.
 The CQT implementation we have does not include an inverse transform, and the features
 extracted by the supplied code are not time aligned. Our fix will be to do a simple FFT followed
-by median filtering instead. After pre-processing is complete, the tracks will be put through
+by median filtering in Python. After pre-processing is complete, the tracks will be put through
 our feature extration model.
 
 We've continued to investigate and test the HMM algorithm available in Sci-kit
