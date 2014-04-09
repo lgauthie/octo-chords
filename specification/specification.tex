@@ -76,7 +76,7 @@ generate chroma vectors.\newline
 
 \section{Feature Extraction}
 
-Chroma vectors will be taken at regular sample window intervals (512, 1024) as well as Chroma generated in accordance to the beat intervals given in the billboard dataset.  We will use Marasyas, and in particular, the spectra2chroma MarSystem to extract chroma vectors, which simply takes the energy in each FFT bin and assigns it to the chorma bin closest in frequency . \newline
+Chroma vectors will be taken at regular sample window intervals (512, 1024) as well as Chroma generated in accordance to the beat intervals given in the billboard dataset.  We will use Marasyas, and in particular, the spectra2chroma MarSystem to extract chroma vectors, which simply takes the energy in each FFT bin and assigns it to the chroma bin closest in frequency . \newline
 
 % Define block style
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
@@ -114,11 +114,12 @@ preprocessing of input data has also been explored and is summarized in
 \cite{McVicar:00}.
 
 The output chroma vectors and the ground truth labels will be passed into the
-hidden Markov model (HMM) function available through sci-kit, and will be used
+hidden Markov model (HMM) function available through Sci-kit Learn, and will be used
 to build a transition matrix. The HMM will have 74 states, one for each chord
 of each pitch class, plus the two non-chord states X and N. We will investigate
 further on the project how best to parse out training and testing data for the
-model. Using an HMM model, the chords serve as the hidden variables, while the chorma vectors are the observered variables.
+model. Using an HMM model, the chords serve as the hidden variables, while the chroma 
+vectors are the observed variables.
 
 \section{Progress Report}\label{sec:progreport}
 
@@ -131,11 +132,11 @@ not allow for perfect reconstruction but Schorkhuber was able to achieve a
 reasonable-quality inverse by using the conjugate transpose of the CQT kernel.
 
 The CQT implementation we have does not include an inverse transform. As we
-will be extracting chromas at both regular time intervals and labeled beats, we
+will be extracting chroma vectors at both regular time intervals and labeled beats, we
 are unable to use the Matlab implementation relying on CQT.  Instead will
 implements HPSS using a DFT followed by median filtering in Python. After
 pre-processing is complete, the tracks will be put through our feature
-extraction model as well as the non-preprossed tracks. We will then compare the
+extraction model as well as the non-preprocessed tracks. We will then compare the
 results of the model with the preprocessed and non-preprocessed audio and see if
 it is better able to estimate the chords with HPSS applied.
 
@@ -155,13 +156,13 @@ algorithms.  Some older papers such as \cite{Zenz:20} mention micro--tuning of
 the human voice as well as percussive sounds as sources of classification
 error, so tuning algorithms may be worth investigating in addition to HPSS. Given the time we have to complete this project, we may not be able to implement this additional step, but it could contribute to future work.
 
-For each song in our dataset we are also given key information. It is possiable to use the HMM model to simultaneously estimate the chords and the key of an input audio file \cite{McVicar:00}. Again, it may be worth experimenting with key information in there is time.
+For each song in our dataset we are also given key information. It is possible to use the HMM model to simultaneously estimate the chords and the key of an input audio file \cite{McVicar:00}. Again, it may be worth experimenting with key information in there is time.
 
 We have also updated our design specification and removed exploring a chord estimator that does not use chroma vectors, and added the beginnings of an Introduction that will go into the final report. Several additional research papers have been added to the bibliography.
 
 \subsection{Bugs}
 We've began writing code to extract the chroma information for the songs in our
-dataset using Marsyas with python bindings. We are able to extract chromas for
+dataset using Marsyas with python bindings. We are able to extract chroma information for
 a fixed window size; however, when using a changing window size (where the
 windows correspond to the beat times in our annotated data set), we've run into
 problems with memory allocations in Marsyas. Our current assumption is that
@@ -170,9 +171,9 @@ already been freed, or that there is some subtle memory issues with the way the
 marsyas python bindings are interacting with the python garbage collector. It was also suggested that the issue could be cause by passing buffers into spectrum that weren't powers of two. Unfortunately after adding padding via the Windowing MarSystem the bug persists. 
 
 We plan to re-write the chroma extraction system directly in C++ to rule out the bindings being the problem and to give easier access to Valgrind/GDB to look into the problem further. Our final backup is to just segment the audio in python, and feed it into our extraction system using the
-RealvecSource, allowing us to keep a constant buffer size, but still extract chroma from the correct time stamp. Alternatively, we could use the Accumulator Marsystem to accumuate and average the Chromas for each beat window; however, this may cause problems if a beat transition falls between our standard window size. 
+RealvecSource, allowing us to keep a constant buffer size, but still extract chroma from the correct time stamp. Alternatively, we could use the Accumulator Marsystem to accumulate and average the Chromas for each beat window; however, this may cause problems if a beat transition falls between our standard window size. 
 
-In the meantime, we will also continue to investigate implimentation of the SciKit Lean HMM method on chromas extracted at regular intervals. We have also begun to explore how Chroma vectors can be visualized using the colour map in SciPy, which will be useful for our paper and presentation.
+In the meantime, we will also continue to investigate implementation of the SciKit Lean HMM method on chroma information extracted at regular intervals. We have also begun to explore how chroma vectors can be visualized using the colour map in SciPy, which will be useful for our paper and presentation.
 
 \subsection{Updated Timeline}
 
