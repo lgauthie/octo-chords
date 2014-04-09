@@ -16,7 +16,7 @@
 
 % Title.
 % ------
-\title{CSC 475 Final Project: Design Specification}
+\title{CSC 475 Final Project: Automatic Chord Estimation (Design Specification and Progress Report)}
 
 % Three addresses
 % --------------
@@ -29,6 +29,7 @@
 %
 \maketitle
 %
+
 
 \section{Abstract}\label{sec:desoutline}
 Our project aims to build an automatic chord recognition system using chroma
@@ -71,11 +72,11 @@ frames, which can be seen as spikes in the frequency axis. The end product of
 HPSS is two signals, one with mostly harmonic content, the other with
 percussive sounds which is obtained by complementary diffusion on the
 spectrogram. The second stage of our project will use the harmonic content to
-generate chroma vectors.
+generate chroma vectors.\newline
 
 \section{Feature Extraction}
 
-Chroma vectors will be taken at regular sample window intervals (512, 1024) as well as Chroma generated in accordance to the beat intervals given in the billboard dataset.  We will use Marasyas, and in particular, the spectra2chroma MarSystem to extract chroma vectors, which simply takes the energy in each FFT bin and assigns it to the chorma bin closest in frequency . 
+Chroma vectors will be taken at regular sample window intervals (512, 1024) as well as Chroma generated in accordance to the beat intervals given in the billboard dataset.  We will use Marasyas, and in particular, the spectra2chroma MarSystem to extract chroma vectors, which simply takes the energy in each FFT bin and assigns it to the chorma bin closest in frequency . \newline
 
 % Define block style
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
@@ -117,7 +118,7 @@ hidden Markov model (HMM) function available through sci-kit, and will be used
 to build a transition matrix. The HMM will have 74 states, one for each chord
 of each pitch class, plus the two non-chord states X and N. We will investigate
 further on the project how best to parse out training and testing data for the
-model. Using an HMM model, the chords serve as the hidden variables, while the chorma vectors are the observered variables. 
+model. Using an HMM model, the chords serve as the hidden variables, while the chorma vectors are the observered variables.
 
 \section{Progress Report}\label{sec:progreport}
 
