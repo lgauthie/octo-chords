@@ -1,42 +1,54 @@
 import sys
+import pickle
 
 import numpy as np
 import numpy.matlib as ml
 
 from sklearn.hmm import GaussianHMM
-from collections import defaultdict
 
 def main():
+    """
+    First ARG: list of training files
+    Second ARG: save name for model
+    """
     file1 = sys.argv[1]
+    outname = sys.argv[2]
     file_list = [f[0:-1] for f in open(file1,'r')]
     models, transitions, priors = calc_transmat(file_list)
     hmm = GaussianHMM(
-        n_components=transitions.shape[0],
-        transmat=transitions,
+        transitions.shape[0],
+        "full",
         startprob=priors,
+        transmat=transitions,
     )
-    import ipdb; ipdb.set_trace()
+    hmm.means_ = np.transpose(models['mean'])
+    hmm.covars_ = models['sigma']
+    pickle.dump(hmm, open(outname, "wb"))
 
 def calc_transmat(file_list):
     features, labels = load_feats_labels(file_list)
     globalmean = np.array(map(np.mean, features))
     globalcov = np.cov(features)
     pairs = zip(labels, np.transpose(features))
-    models = {'mean':globalmean, 'sigma':globalcov}
+    models = {'mean':np.array([]), 'sigma':np.array([])}
 
     # Create individual models for each chord
     states = get_labels()
-    for label in states:
+    for i,label in enumerate(states):
         examples = filter(lambda (x,_): x == label, pairs)
         if examples:
-            # TODO: This doesn't work
             [_, feats] = zip(*examples)
             models['mean'] = np.append(models['mean'],
-                                       np.array(map(np.mean, feats),)
-            models['sigma'] = np.cov(feats, rowvar=0)
+                                       np.array(map(np.mean, np.transpose(feats))))
+            models['sigma'] = np.append(models['sigma'],
+                                        np.cov(feats, rowvar=0))
         else:
-            models['mean'] = np.array(map(np.mean, feats))
-            models['sigma'] = np.cov(feats, rowvar=0)
+            models['mean'] = np.append(models['mean'],
+                                       globalmean)
+            models['sigma'] = np.append(models['sigma'],
+                                        globalcov)
+    models['mean'] = models['mean'].reshape(12,models['mean'].size/12)
+    models['sigma'] = models['sigma'].reshape(models['sigma'].size/(12*12),12,12)
 
     n = len(states)
     transitions = np.zeros(shape=(n,n))
@@ -65,6 +77,10 @@ def get_labels():
     labels = [note + ':' + qual for note in notes for qual in quals]
     labels.extend(['X', 'N'])
     return labels
+
+_labels = get_labels()
+def int2label(i):
+    return _labels[i]
 
 def load_feats_labels(file_list):
     """ Read all chord labels from a list of files """
