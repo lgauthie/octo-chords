@@ -1,5 +1,5 @@
 import sys
-import pickle
+import cPickle as pickle
 
 import numpy as np
 import numpy.matlib as ml
