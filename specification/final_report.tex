@@ -1,0 +1,341 @@
+% -----------------------------------------------
+% Template for ISMIR 2013
+% (based on earlier ISMIR templates)
+% -----------------------------------------------
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{ismir2013,amsmath,cite}
+\usepackage{graphicx}
+
+% For Graphs
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usetikzlibrary{calc}
+\usepackage{caption}
+
+% Title.
+% ------
+\title{CSC 475 Final Project: Automatic Chord Estimation (Design Specification and Progress Report)}
+
+% Three addresses
+% --------------
+\threeauthors
+{Lee Gauthier} {\tt lgauthie@uvic.ca}
+{Robert Janzen} {\tt rjanzen@uvic.ca}
+{Sondra Moyls} {\tt smoyls@uvic.ca}
+
+\begin{document}
+%
+\maketitle
+%
+
+
+\section{Abstract}\label{sec:desoutline}
+Our project aims to build an automatic chord recognition system using chroma
+vectors and Hidden Markov Models. Two sets of audio data will be compared: the
+first, unaltered, the second with the transient elements removed using the HPSS
+algorithm. We will also compare extracting the chroma vectors at regular sample
+intervals and at beats in the audio.
+
+\section{Introduction}\label{sec:intro}
+
+Automatic chord detection has many uses including audio transcription, harmonic
+analysis of compositions. It is also useful for content-based music retrieval,
+for example cover song detection is often based on chord progressions
+\cite{Papadopoulos:18}.  Manual annotation of chord content is a very time
+consuming process which requires music theory training. 
+
+Automatic chord detection has been a MIREX task since 2008, and has seen increased
+improvement, with submissions in 2012 surpassing 72% accuracy on unseen data \cite{McVicar:00}.
+
+\section{Data Set}
+
+For this project we will use the annotated Billboard 100 data set. This data
+set includes audio files for approximately 650 audio files from the Billboard
+top 100 chart between the years 1958 and 1991. Each song also includes beat by
+beat chord annotation\cite{Burgoyne:07}. The chords are labeled as either maj,
+min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present or
+detected.  For the scope of this project we will not try to classify inverted
+chords and 7th chords independently, and instead will classify them as one of
+the previously mentioned classes.
+
+\section{Pre-processing}
+Audio will be pre processed by performing harmonic percussive source separation
+(HPSS). It has been noted that applying this pre processing step can greatly
+improve chord estimation accuracy\cite{Reed:09}.
+
+In a spectrogram the harmonic components of a musical signal have a stable
+pitch and form parallel ridges along the time axis. Transient sounds distribute
+their frequency content across the entire spectrum and occur during short time
+frames, which can be seen as spikes in the frequency axis. The end product of
+HPSS is two signals, one with mostly harmonic content, the other with
+percussive sounds which is obtained by complementary diffusion on the
+spectrogram. The second stage of our project will use the harmonic content to
+generate chroma vectors.\newline
+
+\section{Feature Extraction}
+
+Chroma vectors will be taken at regular sample window intervals (512, 1024) as well as Chroma generated in accordance to the beat intervals given in the billboard dataset.  We will use Marasyas, and in particular, the spectra2chroma MarSystem to extract chroma vectors, which simply takes the energy in each FFT bin and assigns it to the chroma bin closest in frequency . \newline
+
+% Define block style
+\tikzstyle{block} = [rectangle, draw, fill=blue!20,
+    text width=7em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+
+\begin{figure}
+\begin{tikzpicture}[node distance=3cm]
+    % Place nodes
+    \node [block] (init) {Billboard Data Set};
+    \node [block, below left of= init] (chordlabel) {Labeled Chords By Beat (.txt)};
+    \node [block, below right of= init] (audio) {Audio (.wav)};
+    \node [block, below of= chordlabel] (chordname) {Chord Names at Beat Times};
+    \node [block, below of= audio] (chroma) {12-bin chroma features};
+    \coordinate (Middle) at ($(chordlabel)!0.5!(chroma)$);
+    \node [block, below of  =Middle, yshift=-1cm] (hmm) {HMM};
+    \node [below of  =Middle] (train) {Training};
+    % Draw edges
+    \path [line] (init) -- (audio);
+    \path [line] (init) -- (chordlabel);
+    \path [line] (chordlabel) -- node {Analyze Groud Truth} (chordname);
+    \path [line] (audio) -- node {Analyze Chroma} (chroma);
+    \path [line] (chroma) -- (hmm);
+    \path [line] (chordname) -- (hmm);
+
+\end{tikzpicture}
+\caption{System Overview}
+\end{figure}
+
+\section{Hidden Markov Model}
+
+Hidden Markov Models (HMMs) are currently the most common method for predicting
+chord labels, and also produce high accuracy scores. Previous use of
+preprocessing of input data has also been explored and is summarized in
+\cite{McVicar:00}.
+
+The output chroma vectors and the ground truth labels will be passed into the
+hidden Markov model (HMM) function available through Sci-kit Learn, and will be used
+to build a transition matrix. The HMM will have 74 states, one for each chord
+of each pitch class, plus the two non-chord states X and N. We will investigate
+further on the project how best to parse out training and testing data for the
+model. Using an HMM model, the chords serve as the hidden variables, while the chroma 
+vectors are the observed variables.
+
+\section{Progress Report}\label{sec:progreport}
+
+\subsection{HPSS}
+It was found by Schorkhuber \cite{Schorkhuber:21} that the constant-Q
+transformation can be used to achieve better frequency resolution in the low
+end and greater time resolution for high frequencies. This can be a useful step
+before performing median filtering. Unfortunately the inverse transform does
+not allow for perfect reconstruction but Schorkhuber was able to achieve a
+reasonable-quality inverse by using the conjugate transpose of the CQT kernel.
+
+The CQT implementation we have does not include an inverse transform. As we
+will be extracting chroma vectors at both regular time intervals and labeled beats, we
+are unable to use the Matlab implementation relying on CQT.  Instead will
+implements HPSS using a DFT followed by median filtering in Python. After
+pre-processing is complete, the tracks will be put through our feature
+extraction model as well as the non-preprocessed tracks. We will then compare the
+results of the model with the preprocessed and non-preprocessed audio and see if
+it is better able to estimate the chords with HPSS applied.
+
+\subsection{Chroma Extraction}
+We have started reading more in depth into the problem of automatic chord
+detection using HMMs and HPSS. In particular, \cite{Ueda:19} discusses a model
+very similar to our goals.  Using the Beatles annotated data set, a 74.24
+percent chord recognition rate was achieved without HPSS, and a 78.48 percent
+chord recognition rate was achieved with it. This is not a trivial increase in
+success, and suggests we should should see higher rates of accuracy when the
+HPSS algorithm is applied to the incoming audio. Another step used in this
+paper that we have not currently considered is the implementation of a tuning
+compensation step. Because tuning pitch may differ between recordings, we may
+need to consider different candidate chroma vectors.  \cite{McVicar:00}
+suggests that tuning using Harte's tuning algorithm is a staple of most modern
+algorithms.  Some older papers such as \cite{Zenz:20} mention micro--tuning of
+the human voice as well as percussive sounds as sources of classification
+error, so tuning algorithms may be worth investigating in addition to HPSS. Given the time we have to complete this project, we may not be able to implement this additional step, but it could contribute to future work.
+
+For each song in our dataset we are also given key information. It is possible to use the HMM model to simultaneously estimate the chords and the key of an input audio file \cite{McVicar:00}. Again, it may be worth experimenting with key information in there is time.
+
+We have also updated our design specification and removed exploring a chord estimator that does not use chroma vectors, and added the beginnings of an Introduction that will go into the final report. Several additional research papers have been added to the bibliography.
+
+\subsection{Bugs}
+We've began writing code to extract the chroma information for the songs in our
+dataset using Marsyas with python bindings. We are able to extract chroma information for
+a fixed window size; however, when using a changing window size (where the
+windows correspond to the beat times in our annotated data set), we've run into
+problems with memory allocations in Marsyas. Our current assumption is that
+either one of the MarSystem constructors is trying to free a buffer that has
+already been freed, or that there is some subtle memory issues with the way the
+marsyas python bindings are interacting with the python garbage collector. It was also suggested that the issue could be cause by passing buffers into spectrum that weren't powers of two. Unfortunately after adding padding via the Windowing MarSystem the bug persists. 
+
+We plan to re-write the chroma extraction system directly in C++ to rule out the bindings being the problem and to give easier access to Valgrind/GDB to look into the problem further. Our final backup is to just segment the audio in python, and feed it into our extraction system using the
+RealvecSource, allowing us to keep a constant buffer size, but still extract chroma from the correct time stamp. Alternatively, we could use the Accumulator Marsystem to accumulate and average the Chromas for each beat window; however, this may cause problems if a beat transition falls between our standard window size. 
+
+In the meantime, we will also continue to investigate implementation of the SciKit Lean HMM method on chroma information extracted at regular intervals. We have also begun to explore how chroma vectors can be visualized using the colour map in SciPy, which will be useful for our paper and presentation.
+
+\subsection{Updated Timeline}
+
+We have updated the timeline to complete our project as is refected below. \newline \newline
+{\bf April 9 - April 10}\newline
+- Get a baseline HMM going using chromas extracted at regular intervals. \newline
+- Continue to work on HPSS
+\newline
+\newline
+{\bf April 11 - April 13}\newline
+- Modify chroma extraction to take beats into consideration. \newline
+- Compair HPSS results when using HPSS preprocessing and when not
+\newline
+\newline
+{\bf April 13 - April 21}\newline
+- Add any additional methods (ex. Tuning) if time \newline
+- Start writing report, analysing results \newline
+- Make presentation slides. Finish any final testing.
+\newline
+\newline
+{\bf Tuesday April 22}\newline
+- Report due and class presentation. 
+
+\begin{thebibliography}{citations}
+
+\bibitem {McVicar:00}
+M. McVicar, et al.
+"Automatic Chord Estimation for Audio: A Review of the State of the Art''
+{\it IEEE/ACM Transactions on Audio, Speech, and Language Processing},
+Vol.~22,No.~2, pp.~1-20, 2014.
+
+\bibitem{Ueda:01}
+Yushi Ueda, et al.
+"HMM-Based Approach For Automatic Chord Detection Using Refined Acoustic
+Features''
+{\it IEEE International Conference on Acoustics, Speech, and Signal Processing 2010},
+pp.~5518--5521, 2010.
+
+\bibitem{Varewyck:02}
+Matthias Varewyck, et al.
+"A Novel Chroma Representation of Polyphonic Music based on Multiple Pitch
+Tracking Techniques''
+{\it 16th ACM International Conference on Multimedia},
+2008.
+
+\bibitem{Lee:03}
+Kyogu Lee
+"Automatic Chord Recognition from Audio Using Enhanced Pitch Class Profile''
+{\it Center for Computer Research in Music and Acoustics, Stanford},
+2006.
+
+\bibitem{Papadopoulus:04}
+Hélène Papadopoulos and George Tzanetakis
+"Modeling Chord and Key Structure With Markov Logic''
+{\it 13th International Society for Music Information Retrieval Conference},
+pp.~127-132, 2012.
+
+\bibitem{Richardson:05}
+Matthew Richardson and Pedro Domingos
+"Markov Logic Networks,''
+{\it Department of Computer Science and Engineering, University of Washington, Seattle, WA},
+pp.~1-43, 2006.
+
+\bibitem{SciKit:06}
+F. Pedregosa, et al.
+"Scikit-learn: Machine Learning in Python"
+{\it Journal of Machine Learning Research},
+Vol.~12,pp.~2825-2830, 2011.
+
+\bibitem{Burgoyne:07}
+John Ashley Burgoyne, Jonathan Wild, and Ichiro Fujinaga
+"An Expert Gound-Truth Set For Audio Chord Recognition and Music Analysis,"
+{\it 12th International Society for Music Information Retrieval Conference},
+pp.~633-638, 2011.
+
+\bibitem{Burgoyne:08}
+Nanzhu Jiang et al.
+"Analyzing Chroma Feature Types for Automated Chord Recognition,"
+{\it AES 42nd International Conference },
+pp.~1-10, 2011.
+
+\bibitem{Reed:09}
+J.T. Reed, Yushi Ueda, S. Siniscalchi, Yuki Uchiyama, Shigeki Sagayama, C.-H. Lee
+"Minimum Classification Error Training To Improve Isolated Chord Recognition"
+{\it 10th International Society for Music Information Retrieval Conference (ISMIR 2009)},
+pp.~609-614, 2009.
+
+\bibitem{Mauch:10}
+Matthias Mauch
+"Automatic Chord Transcription from Audio Using Computation Models of Musical Context"
+{\it School of Electronic Engineering and Computer Science, Queen Mary, University of London},
+pp.~1-168, 2010.
+
+\bibitem{FitzGerald:11}
+Derry FitzGerald
+"Harmonic/Percussive Separation Using Median Filtering"
+{\it Proc\. of the 13th Int. Conference on Digital Audio Effects (DAFx-10), Graz, Austria, September 6-10, 2010},
+pp.~1-4, 2010.
+
+\bibitem{Blunsom:12}
+Phil Blunsom
+"Hidden Markov Models"
+{\it Melbourne School of Engineering},
+pp.~1-7, 2004.
+
+\bibitem{Sumi:13}
+Kouhei Sumi, KatsutoshiItoyama, Kazuyoshi Yoshii, Kazunori Komatani, Tetsuya Ogata, and Hiroshi G. Okuno
+"Automatic Chord Recognition Based on Probabilistic Integration of Chord Transition and Bass Pitch Estimation"
+{\it ISMIR 2008 - Session 1a - Harmony},
+pp.~39-44, 2008.
+
+\bibitem{Ryyananen:14}
+Matti P. Ryyananen and Anssi P. Klapuri
+"Automatic Transcription of Melody, Bass Line, and Chords in Polyphonic Music"
+{\it Computer Music Journal, Volume 32, Number 3},
+pp.~72-86, Fall 2008.
+
+\bibitem{Lee:15}
+Kyogu Lee and Malcolm Stanley
+"Automatic Chord Recognition from Audio Using an HMM with Supervised Learning"
+{\it AMCMM '06},
+pp.~10-11, 2006.
+
+\bibitem{Papadopoulus:16}
+Hélène Papadopoulos and Geoffroy Peeters
+"Large-Scale Study of Chord Estimation Algorithms Based on Chroma Representation and HMM"
+{\it CBMI 2007},
+pp.~53-60, 2007.
+
+\bibitem{Salamon:17}
+Justin Salamon and Emilia G{\'o}mez
+"Melody Extraction from Polyphonic Music Signals using Pitch Contour Characteristics"
+{\it IEEE Transactions on Audio, Speech and Language Processing}
+pp.~1759-1770, 2012.
+
+\bibitem{Papadopoulos:18}
+Hélène Papadopoulos and Geoffroy Peeters
+"Joint Estimation of Chords and Downbeats From an Audio Signal"
+{\it IEEE Transactions on Audio, Speech and Language Processing, Vol. 19, No.1}
+January 2011.
+
+\bibitem{Ueda:19}
+Yushi Ueda, Yuki Uchiyama, Takuya Nichimoto, Nobutaka Ono and Shigeki Sagayama
+"HMM-Based Approach for Automatic Chord Detection Using Refined Acoustic Features"
+{\it IEEE Transactions on Audio, Speech and Language Processing}
+pp.~5518-5521, 2010.
+
+\bibitem{Zenz:20}
+Veronika Zenz and Andrea Rauber
+"Automatic Chord Detection Incorporating Beat and Key Detection"
+{\it IEEE International Conference on Signal Processing and Communicationg}
+pp.~1175-1178, 2007.
+
+\bibitem{Schorkhuber:21}
+Christian Schorkhuber and Anssi Kalpuri
+"Constant-Q Transform Toolbox for Music Processing" {\it 7th Sound and Music
+Computing Conference, Barcelona, Spain} July 2010.
+
+
+\end{thebibliography}
+
+\bibliography{ismir2013template}
+
+\end{document}
+
