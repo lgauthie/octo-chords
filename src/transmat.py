@@ -84,22 +84,19 @@ def int2label(i):
 
 def load_feats_labels(file_list):
     """ Read all chord labels from a list of files """
-    features = np.array([])
-    labels = np.array([])
+    features = []
+    labels = []
     for path in file_list:
         with open(path, 'r') as f:
             contents = np.array(
                 [l[0:-1].split(',') for l in f if not l[0] in ['%', '@', '\n']]
             )
-            labels = np.append(
-                labels,
-                np.array([label for label in contents[:,-1]])
-            )
-            features = np.append(
-                features,
-                np.array([map(float, feat) for feat in contents[:,0:-1]])
-            )
-    features = features.reshape(12,np.size(features)/12)
+            labels.append([label for label in contents[:,-1]])
+            features.append([map(float, feat) for feat in contents[:,0:-1]])
+    features = np.array(features)
+    features.shape = (12,features.size/12)
+    labels = np.array(labels)
+    labels.shape = (labels.size,)
     return (features, labels)
 
 if __name__=="__main__":
