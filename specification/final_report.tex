@@ -81,7 +81,7 @@ which can be seen as spikes in the frequency axis. The end product of HPSS is tw
 one with mostly harmonic content, the other with percussive sounds which is obtained by 
 complementary diffusion on the spectrogram.
 
-Each auto file is mixed to mono to reduce processing time. Then Chorma vector extraction is 
+Each audio file is mixed to mono to reduce processing time. Then Chorma vector extraction is 
 performed on the two auto datasets at intervals corresponding to the beat information in the 
 annotated data. Each chroma vector is a real valued vector which contains the salience of each 
 of the pitch classes (C, C\#.... B) for a given time window.
@@ -97,7 +97,7 @@ To create a supervised model, the transition matrix, prior,
 and mean and convariance of the vectors is created and run through functions available through
 SciKit Learn (http://scikit-learn.org) for convenient training and testing. The full code of 
 our model can be found at https://github.com/lgauthie/octo-chords. A full overview of our
-proposed model can be seen in figure ~\ref{fig:overview}.
+proposed model can be seen in Figure \ref{fig:overview}.
 
 % Define block style
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
@@ -124,25 +124,38 @@ proposed model can be seen in figure ~\ref{fig:overview}.
     \path [line] (chordname) -- (hmm);
 
 \end{tikzpicture}
-\label{fig:overview}
 \caption{System Overview}
+\label{fig:overview}
 \end{figure}
 
 \section{Model}
 
-\subsection{Pre-Prossessing}
+\subsection{Pre-Processing}
+
+- How were the HPSS's implemented?
+- more deets on how these work
+- picture of previous spectrum, and then the hpss spectrum maybe? T'be radskis.
 
 \subsection{Chromogram Computation}
 
+- Pretty pictures
+- More deets on how this jam works. The chroma algorithm in marsyas is based
+on some simple Dan Ellis code that just uses nbins. Could have used Q-transforms, etc.
+
 \subsection{Hidden Markov Models}
+
+- deets on how HMMs work and how our code does things.
+- pic of transition matrix results for some track.
 
 \subsection{Evaluation}
 
-\section{Results}
-
-It was awesome. Everyone had a good gaffaw.
+What worked well? What didn't? Where did most of the errors occur?
+What was our success rate? Did the results improve with HPSS?
 
 \section{Conclusion and Future Work}
+
+We have introduced a simple beat-synchronous automatic chord estimation model
+and evaluated the effectiveness of HPSS as a preprocessing step.
 
 Exploration of tuning, different hmm models (ex, better model for less frequent chords)
 
