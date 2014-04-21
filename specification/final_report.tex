@@ -198,6 +198,18 @@ and evaluated the effectiveness of HPSS as a preprocessing step.
 
 Exploration of tuning, different hmm models (ex, better model for less frequent chords)
 
+One preprocessing step that we have not considered in this paper is tuning. Because tuning pitch 
+may differ between recordings, it may be necessary to consider different candidate chroma vectors. 
+\cite{McVicar:00} suggests that tuning using Harte's tuning algorithm is a staple of most modern
+algorithms. Some older papers such as \cite{Zenz:20} mention micro--tuning of the human voice as well 
+as percussive sounds as sources of classification error, so tuning algorithms may be worth investigating 
+as a future preprocessing stepin addition to HPSS. 
+
+Each song in the Billboard dataset also includes key information. It is possible to use the HMM model to 
+simultaneously estimate the chords and the key of an input audio file \cite{McVicar:00}, so a future
+implementation may use this data to predict key information as well as chords.
+
+
 
 \begin{thebibliography}{citations}
 
