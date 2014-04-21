@@ -133,6 +133,13 @@ proposed model can be seen in Figure \ref{fig:overview}.
 
 \subsection{Pre-Processing}
 
+- In particular, \cite{Ueda:19} discusses a model
+very similar to our goals. Using the Beatles annotated data set, a 74.24
+percent chord recognition rate was achieved without HPSS, and a 78.48 percent
+chord recognition rate was achieved with it. This is not a trivial increase in
+success, and suggests we should should see higher rates of accuracy when the
+HPSS algorithm is applied to the incoming audio.
+
 - How were the HPSS's implemented?
 - more deets on how these work
 - picture of previous spectrum, and then the hpss spectrum maybe? T'be radskis.
@@ -156,6 +163,11 @@ lines up with our ground truth data.
 EDIT: INSERT PICTURE OF AN EXTRACTED CHROMA VECTOR
 
 - did we multiple by log? normalize? Talk about strategy we exentually went with.
+-{Jiang:21} investigates different preprocessing steps. Discusses that
+an HMM model does it's own kind of temporal smoothing in the classification
+stage, and that applying an additional smoothing process doesn't increase results much.
+The authors are mention doing logarithmic compression on the audio data before
+calculating the chroma to account for the logarithmic sensation of sound intensity.
 
 \subsection{Hidden Markov Models}
 
@@ -164,11 +176,6 @@ Hidden Markov Models have become a common method for for automatic chrod estimat
 model, the a given chord depends on the previous chord predicted while all the other chords are hidden.
 For each song in our data set, the set of chorma vectors are the observations, while the chord labels
 are our states. 
-
-
-- each song a sequence. Each frame has a chroma vector
-
-Each chroma vector
 
 
 
@@ -182,12 +189,15 @@ Each chroma vector
 What worked well? What didn't? Where did most of the errors occur?
 What was our success rate? Did the results improve with HPSS?
 
+Hey look a dinosaur!
+
 \section{Conclusion and Future Work}
 
 We have introduced a simple beat-synchronous automatic chord estimation model
 and evaluated the effectiveness of HPSS as a preprocessing step.
 
 Exploration of tuning, different hmm models (ex, better model for less frequent chords)
+
 
 \begin{thebibliography}{citations}
 
@@ -323,6 +333,12 @@ Dan Ellis
 "Supervised Chord Recognition for Music Audio in Matlab"
 {\it LabROSA: Projects http://labrosa.ee.columbia.edu/projects/chords/}
 2010. Last Accessed: Apr 17, 2014. 
+
+\bibitem{Jiang:21}
+Nanzhu Jiang, Peter Grosche, Verena Konz, and Meinard Müller.
+"Analyzing Chroma Feature Types for Automated Chord Recognition"
+{\it AES 42nd International Conference}
+July 2011. 
 
 
 \end{thebibliography}
