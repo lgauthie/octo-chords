@@ -60,7 +60,6 @@ when you are less a sleepy bear ...
 
 \section{Overview}\label{sec:approch}
 
-
 For this project we will use the annotated Billboard 100 data set. This data
 set includes audio files for approximately 650 audio files from the Billboard
 top 100 chart between the years 1958 and 1991. Each song also includes beat by
@@ -130,6 +129,15 @@ proposed model can be seen in Figure \ref{fig:overview}.
 \section{Model}
 
 \subsection{Pre-Processing}
+Median ﬁlters operate by replacing a given sample in a signal by the median of 
+the signal values in a window around the sample \cite{FitzGerald:11} First step 
+is short time fourier transform then median filtering with kernel sizes 1 and 23 
+followed by the inverse short time fourier transform. Input to the hiss is an N 
+dimensional input array, the audio.
+
+http://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm#Filtering_and_smoothing_EM_algorithms
+
+
 
 - In particular, \cite{Ueda:19} discusses a model
 very similar to our goals. Using the Beatles annotated data set, a 74.24
@@ -211,8 +219,7 @@ Vol.~22,No.~2, pp.~1-20, 2014.
 
 \bibitem{Ueda:01}
 Yushi Ueda, et al.
-"HMM-Based Approach For Automatic Chord Detection Using Refined Acoustic
-Features''
+"HMM-Based Approach For Automatic Chord Detection Using Refined Acoustic Features''
 {\it IEEE International Conference on Acoustics, Speech, and Signal Processing 2010},
 pp.~5518--5521, 2010.
 
