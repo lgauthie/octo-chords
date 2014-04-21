@@ -8,7 +8,6 @@ import numpy.linalg as linalg
 import matplotlib.pyplot as plt
 
 from sklearn.hmm import GaussianHMM
-from multiprocessing import Pool
 
 def main():
     """
@@ -25,6 +24,7 @@ def main():
         startprob=priors,
         transmat=transitions,
     )
+    feats, _ = load_feats_labels(file_list)
     hmm.means_ = np.transpose(models['mean'])
     hmm.covars_ = models['sigma']
     features, labels = load_feats_labels(['audio.arff'])
@@ -71,7 +71,7 @@ def calc_transmat(file_list):
     for (i, ikey) in enumerate(states):
         for (j, jkey) in enumerate(states):
             # Add one so there is no zero probabilities
-            transitions[i,j] = 1 + sum([1 for (f, s) in trans
+            transitions[i,j] = 0.01 + sum([1 for (f, s) in trans
                                         if f == ikey and s == jkey])
     priors = np.sum(transitions, 1)
     transitions = np.divide(
@@ -88,14 +88,25 @@ def get_labels():
         'A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G#',
         'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'Fb', 'Gb',
     ]
-    quals = ['maj', 'min', 'aug', 'dim', 'sus2', 'sus4']
+    quals = ['maj', 'min']#, 'aug', 'dim', 'sus2', 'sus4']
     labels = [note + ':' + qual for note in notes for qual in quals]
-    labels.extend(['X', 'N'])
+    labels.extend(['N'])
     return labels
 
 _labels = get_labels()
 def int2label(i):
     return _labels[i]
+
+def label_filt(label):
+    sp = label.split(':')
+    if sp[0] in ['N', 'X']:
+        return 'N'
+    if sp[1] in ['dim']:
+        return sp[0] + ':min'
+    elif sp[1] in ['aug', 'sus2', 'sus4']:
+        return sp[0] + ':maj'
+    else:
+        return label
 
 def load_feats_labels(file_list):
     """ Read all chord labels from a list of files """
@@ -106,7 +117,7 @@ def load_feats_labels(file_list):
             contents = np.array(
                 [l[0:-1].split(',') for l in f if not l[0] in ['%', '@', '\n']]
             )
-            labels.append([label for label in contents[:,-1]])
+            labels.append([label_filt(label) for label in contents[:,-1]])
             features.append([map(float, feat) for feat in contents[:,0:-1]])
     features = list(itertools.chain(*features))
     features = np.array(features)
