@@ -8,6 +8,7 @@ import numpy.linalg as linalg
 import matplotlib.pyplot as plt
 
 from sklearn.hmm import GaussianHMM
+from multiprocessing import Pool
 
 def main():
     """
