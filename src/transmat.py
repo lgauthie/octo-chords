@@ -4,6 +4,8 @@ import itertools
 
 import numpy as np
 import numpy.matlib as ml
+import numpy.linalg as linalg
+import matplotlib.pyplot as plt
 
 from sklearn.hmm import GaussianHMM
 
@@ -24,7 +26,13 @@ def main():
     )
     hmm.means_ = np.transpose(models['mean'])
     hmm.covars_ = models['sigma']
+    features, labels = load_feats_labels(['audio.arff'])
+    _, seq = hmm.decode(np.transpose(features))
+    #print filter(lambda(x,y): x==y, zip(labels, map(int2label, seq)))
+    print len(filter(lambda(x,y): x==y, zip(labels, map(int2label, seq))))
     pickle.dump(hmm, open(outname, "wb"))
+    plt.imshow(transitions)
+    plt.show()
 
 def calc_transmat(file_list):
     features, labels = load_feats_labels(file_list)
@@ -41,13 +49,18 @@ def calc_transmat(file_list):
             [_, feats] = zip(*examples)
             models['mean'] = np.append(models['mean'],
                                        np.array(map(np.mean, np.transpose(feats))))
-            models['sigma'] = np.append(models['sigma'],
-                                        np.cov(feats, rowvar=0))
+            covars = np.cov(np.transpose(feats))
+            if (not np.allclose(covars, covars.T)
+                or np.any(linalg.eigvalsh(covars) <= 0)):
+                print 'Invalid Covars, using globalcov'
+                models['sigma'] = np.append(models['sigma'], globalcov)
+            else:
+                models['sigma'] = np.append(models['sigma'],
+                                            np.cov(np.transpose(feats)))
+
         else:
-            models['mean'] = np.append(models['mean'],
-                                       globalmean)
-            models['sigma'] = np.append(models['sigma'],
-                                        globalcov)
+            models['mean'] = np.append(models['mean'], globalmean)
+            models['sigma'] = np.append(models['sigma'], globalcov)
     models['mean'] = models['mean'].reshape(12,models['mean'].size/12)
     models['sigma'] = models['sigma'].reshape(models['sigma'].size/(12*12),12,12)
 
@@ -97,6 +110,7 @@ def load_feats_labels(file_list):
     features = list(itertools.chain(*features))
     features = np.array(features)
     features.shape = (12,features.size/12)
+    labels = list(itertools.chain(*labels))
     labels = np.array(labels)
     labels.shape = (labels.size,)
     return (features, labels)

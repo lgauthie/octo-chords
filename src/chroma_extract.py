@@ -6,7 +6,7 @@ import numpy as np
 from marsyas_util import create
 
 def main():
-    N = 2**14
+    N = 2**12
     fname = sys.argv[1] #Text file
     fname2 = sys.argv[2] #Wav file
 
@@ -19,11 +19,11 @@ def main():
     netspec = ["Series/net",
         ["SoundFileSource/src",
          "MixToMono/stm",
-         "Windowing/window",
+         #"Windowing/window",
          "ShiftOutput/shift",
          "Spectrum/spec",
          "PowerSpectrum/pspec",
-         "Chroma/chroma",
+         "Spectrum2Chroma/chroma",
          "Inject/inj", # add extra sample to hold label
          "WekaSink/wekout"
         ]]
@@ -32,7 +32,7 @@ def main():
     net.updControl("SoundFileSource/src/mrs_string/filename", fname2)
     net.updControl("Windowing/window/mrs_natural/zeroPadding", N)
     net.updControl("ShiftOutput/shift/mrs_natural/Interpolation", N)
-    net.updControl("Windowing/window/mrs_natural/size", N)
+    #net.updControl("Windowing/window/mrs_natural/size", N)
 
     notes = [
         'A',  'B',  'C',  'D',  'E',  'F',  'G',
