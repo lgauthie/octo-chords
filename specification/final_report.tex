@@ -51,7 +51,7 @@ They have also been used successfully in detecting cover-songs \cite{Papadopoulo
 Automatic chord detection has been a MIREX task since 2008, and has since seen increased
 improvement, with submissions in 2012 surpassing 72 percent accuracy on unseen data 
 \cite{McVicar:00}. Hidden Markov Models have been used successfully in a number of 
-automatic chord estimation models, including \cite{Ueda:01}, \cite{Lee:15}, \cite{Ueda:19},
+automatic chord estimation models, including \cite{Ueda:01} \cite{Lee:15} \cite{Ueda:19}
 and \cite{Papadopoulos:18}.
 
 ...EDIT: Write more about previous papers that used HPSS, and beat synchronous extraction
@@ -91,13 +91,11 @@ After extracting the chroma vectors for each song in the data set, 63 of the tra
 chosen using the random function in python and kept as testing data. The rest of the data set
 is used to train our HMM model. Hidden Markov Models (HMMs) are currently the most common method for 
 predicting chord labels, and also produce high accuracy scores. Previous use of
-preprocessing of input data has also been explored and is summarized in
-\cite{McVicar:00}.
+preprocessing of input data has also been explored and is summarized in \cite{McVicar:00}.
 
-To create a supervised model, the transition matrix, prior, 
-and mean and convariance of the vectors is created and run through functions available through
-SciKit Learn (http://scikit-learn.org) for convenient training and testing. The full code of 
-our model can be found at https://github.com/lgauthie/octo-chords. A full overview of our
+To create a supervised model, the transition matrix, prior, and mean and convariance of the 
+vectors is created and run through functions available through
+SciKit Learn for convenient training and testing. A full overview of our
 proposed model can be seen in Figure \ref{fig:overview}.
 
 % Define block style
@@ -148,14 +146,14 @@ HPSS algorithm is applied to the incoming audio.
 
 To compute the 12-dimensional chroma vectors (or Pitch Class Profiles), we used the 
 Spectrum2Chroma Marsystem available in Marsyas, which is based on the MATLAB algorithm 
-fft2chromamx.m written by Dan Ellis (http://www.ee.columbia.edu/~dpwe/resources/matlab/chroma-ansyn/#1). 
+fft2chromamx.m written by Dan Ellis.
 Each chroma vector represents the intensity the 12 pitch classes at each window of 
 samples from the audio file. 
 
 Because most chord transitions occur on beats, extrating chorma information for blocks corresponding
 to each beat has shown to be beneficial in creating an more accurate automatic chord
 estimation model. For example, in \cite{Zenz:20}, extracting chroma vectors on beats improved
-the reults by 6\%. In \cite{McVicor:00}, it is mentioned that this method exploits the stability
+the reults by six percent. In \cite{McVicor:00}, it is mentioned that this method exploits the stability
 of chords between beats, and reduces the overall computational cost by reducing the total
 number of windows. Because the Billboard data is annotation at beat times, this approach naturally
 lines up with our ground truth data.
@@ -163,7 +161,7 @@ lines up with our ground truth data.
 EDIT: INSERT PICTURE OF AN EXTRACTED CHROMA VECTOR
 
 - did we multiple by log? normalize? Talk about strategy we exentually went with.
--{Jiang:21} investigates different preprocessing steps. Discusses that
+- \cite{Jiang:22} investigates different preprocessing steps. Discusses that
 an HMM model does it's own kind of temporal smoothing in the classification
 stage, and that applying an additional smoothing process doesn't increase results much.
 The authors are mention doing logarithmic compression on the audio data before
@@ -171,15 +169,7 @@ calculating the chroma to account for the logarithmic sensation of sound intensi
 
 \subsection{Hidden Markov Models}
 
-Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous, 
-Hidden Markov Models have become a common method for for automatic chrod estimation. In this
-model, the a given chord depends on the previous chord predicted while all the other chords are hidden.
-For each song in our data set, the set of chorma vectors are the observations, while the chord labels
-are our states. 
-
-
-
-- used 
+Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous,  Hidden Markov Models have become a common method for for automatic chord estimation. In this model, the a given chord depends on the previous chord predicted while all the other chords are hidden. For each song in our data set, the set of chorma vectors are the observations, while the chord labels are our states. 
 
 - deets on how HMMs work and how our code does things.
 - pic of transition matrix results for some track.
@@ -189,7 +179,7 @@ are our states.
 What worked well? What didn't? Where did most of the errors occur?
 What was our success rate? Did the results improve with HPSS?
 
-Hey look a dinosaur!
+Hey look a dinosaur.
 
 \section{Conclusion and Future Work}
 
@@ -215,7 +205,7 @@ implementation may use this data to predict key information as well as chords.
 
 \bibitem {McVicar:00}
 M. McVicar, et al.
-"Automatic Chord Estimation for Audio: A Review of the State of the Art''
+"Automatic Chord Estimation for Audio: A Review of the State of the Art"
 {\it IEEE/ACM Transactions on Audio, Speech, and Language Processing},
 Vol.~22,No.~2, pp.~1-20, 2014.
 
@@ -247,8 +237,9 @@ pp.~127-132, 2012.
 
 \bibitem{Schorkhuber:05}
 Christian Schorkhuber and Anssi Kalpuri
-"Constant-Q Transform Toolbox for Music Processing" {\it 7th Sound and Music
-Computing Conference, Barcelona, Spain} July 2010.
+"Constant-Q Transform Toolbox for Music Processing" 
+{\it 7th Sound and Music Computing Conference, Barcelona, Spain},
+July 2010.
 
 \bibitem{SciKit:06}
 F. Pedregosa, et al.
@@ -319,39 +310,38 @@ pp.~53-60, 2007.
 \bibitem{Salamon:17}
 Justin Salamon and Emilia G{\'o}mez
 "Melody Extraction from Polyphonic Music Signals using Pitch Contour Characteristics"
-{\it IEEE Transactions on Audio, Speech and Language Processing}
+{\it IEEE Transactions on Audio, Speech and Language Processing},
 pp.~1759-1770, 2012.
 
 \bibitem{Papadopoulos:18}
 Hélène Papadopoulos and Geoffroy Peeters
 "Joint Estimation of Chords and Downbeats From an Audio Signal"
-{\it IEEE Transactions on Audio, Speech and Language Processing, Vol. 19, No.1}
+{\it IEEE Transactions on Audio, Speech and Language Processing, Vol. 19, No.1},
 January 2011.
 
 \bibitem{Ueda:19}
 Yushi Ueda, Yuki Uchiyama, Takuya Nichimoto, Nobutaka Ono and Shigeki Sagayama
 "HMM-Based Approach for Automatic Chord Detection Using Refined Acoustic Features"
-{\it IEEE Transactions on Audio, Speech and Language Processing}
+{\it IEEE Transactions on Audio, Speech and Language Processing},
 pp.~5518-5521, 2010.
 
 \bibitem{Zenz:20}
 Veronika Zenz and Andrea Rauber
 "Automatic Chord Detection Incorporating Beat and Key Detection"
-{\it IEEE International Conference on Signal Processing and Communicationg}
+{\it IEEE International Conference on Signal Processing and Communicationg},
 pp.~1175-1178, 2007.
 
 \bibitem{Ellis:21}
 Dan Ellis
 "Supervised Chord Recognition for Music Audio in Matlab"
-{\it LabROSA: Projects http://labrosa.ee.columbia.edu/projects/chords/}
+{\it LabROSA: Projects http://labrosa.ee.columbia.edu/projects/chords/},
 2010. Last Accessed: Apr 17, 2014. 
 
-\bibitem{Jiang:21}
-Nanzhu Jiang, Peter Grosche, Verena Konz, and Meinard Müller.
+\bibitem{Jiang:22}
+Nanzhu Jiang, Peter Grosche, Verena Konz, and Meinard Muller.
 "Analyzing Chroma Feature Types for Automated Chord Recognition"
-{\it AES 42nd International Conference}
+{\it AES 42nd International Conference},
 July 2011. 
-
 
 \end{thebibliography}
 
