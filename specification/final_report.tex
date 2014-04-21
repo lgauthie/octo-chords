@@ -139,14 +139,38 @@ proposed model can be seen in Figure \ref{fig:overview}.
 
 \subsection{Chromogram Computation}
 
-To compute the 12-dimensional chroma vectors, we used the Chroma Marsystem available in Marsyas. 
-There are many ways to compute the chorma values...(Sondra is writing here).
+To compute the 12-dimensional chroma vectors (or Pitch Class Profiles), we used the 
+Spectrum2Chroma Marsystem available in Marsyas, which is based on the MATLAB algorithm 
+fft2chromamx.m written by Dan Ellis (http://www.ee.columbia.edu/~dpwe/resources/matlab/chroma-ansyn/#1). 
+Each chroma vector represents the intensity the 12 pitch classes at each window of 
+samples from the audio file. 
 
-- Pretty pictures
-- More deets on how this jam works. The chroma algorithm in marsyas is based
-on some simple Dan Ellis code that just uses nbins. Could have used Q-transforms, etc.
+Because most chord transitions occur on beats, extrating chorma information for blocks corresponding
+to each beat has shown to be beneficial in creating an more accurate automatic chord
+estimation model. For example, in \cite{Zenz:20}, extracting chroma vectors on beats improved
+the reults by 6\%. In \cite{McVicor:00}, it is mentioned that this method exploits the stability
+of chords between beats, and reduces the overall computational cost by reducing the total
+number of windows. Because the Billboard data is annotation at beat times, this approach naturally
+lines up with our ground truth data.
+
+EDIT: INSERT PICTURE OF AN EXTRACTED CHROMA VECTOR
+
+- did we multiple by log? normalize? Talk about strategy we exentually went with.
 
 \subsection{Hidden Markov Models}
+
+Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous, 
+Hidden Markov Models have become a common method for for automatic chrod estimation. In this
+model, the a given chord depends on the previous chord predicted while all the other chords are hidden.
+For each song in our data set, the set of chorma vectors are the observations, while the chord labels
+are our states. 
+
+
+- each song a sequence. Each frame has a chroma vector
+
+Each chroma vector
+
+
 
 - used 
 
