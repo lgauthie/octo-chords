@@ -51,7 +51,8 @@ They have also been used successfully in detecting cover-songs \cite{Papadopoulo
 Automatic chord detection has been a MIREX task since 2008, and has since seen increased
 improvement, with submissions in 2012 surpassing 72 percent accuracy on unseen data 
 \cite{McVicar:00}. Hidden Markov Models have been used successfully in a number of 
-automatic chord estimation models, including ...EDIT ME...
+automatic chord estimation models, including \cite{Ueda:01}, \cite{Lee:15}, \cite{Ueda:19},
+and \cite{Papadopoulos:18}.
 
 ...EDIT: Write more about previous papers that used HPSS, and beat synchronous extraction
 when you are less a sleepy bear ...
@@ -138,11 +139,16 @@ proposed model can be seen in Figure \ref{fig:overview}.
 
 \subsection{Chromogram Computation}
 
+To compute the 12-dimensional chroma vectors, we used the Chroma Marsystem available in Marsyas. 
+There are many ways to compute the chorma values...(Sondra is writing here).
+
 - Pretty pictures
 - More deets on how this jam works. The chroma algorithm in marsyas is based
 on some simple Dan Ellis code that just uses nbins. Could have used Q-transforms, etc.
 
 \subsection{Hidden Markov Models}
+
+- used 
 
 - deets on how HMMs work and how our code does things.
 - pic of transition matrix results for some track.
@@ -193,11 +199,10 @@ Hélène Papadopoulos and George Tzanetakis
 {\it 13th International Society for Music Information Retrieval Conference},
 pp.~127-132, 2012.
 
-\bibitem{Richardson:05}
-Matthew Richardson and Pedro Domingos
-"Markov Logic Networks,''
-{\it Department of Computer Science and Engineering, University of Washington, Seattle, WA},
-pp.~1-43, 2006.
+\bibitem{Schorkhuber:05}
+Christian Schorkhuber and Anssi Kalpuri
+"Constant-Q Transform Toolbox for Music Processing" {\it 7th Sound and Music
+Computing Conference, Barcelona, Spain} July 2010.
 
 \bibitem{SciKit:06}
 F. Pedregosa, et al.
@@ -289,10 +294,11 @@ Veronika Zenz and Andrea Rauber
 {\it IEEE International Conference on Signal Processing and Communicationg}
 pp.~1175-1178, 2007.
 
-\bibitem{Schorkhuber:21}
-Christian Schorkhuber and Anssi Kalpuri
-"Constant-Q Transform Toolbox for Music Processing" {\it 7th Sound and Music
-Computing Conference, Barcelona, Spain} July 2010.
+\bibitem{Ellis:21}
+Dan Ellis
+"Supervised Chord Recognition for Music Audio in Matlab"
+{\it LabROSA: Projects http://labrosa.ee.columbia.edu/projects/chords/}
+2010. Last Accessed: Apr 17, 2014. 
 
 
 \end{thebibliography}
