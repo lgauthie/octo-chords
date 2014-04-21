@@ -1,5 +1,6 @@
 import sys
 import cPickle as pickle
+import itertools
 
 import numpy as np
 import numpy.matlib as ml
@@ -93,6 +94,7 @@ def load_feats_labels(file_list):
             )
             labels.append([label for label in contents[:,-1]])
             features.append([map(float, feat) for feat in contents[:,0:-1]])
+    features = list(itertools.chain(*features))
     features = np.array(features)
     features.shape = (12,features.size/12)
     labels = np.array(labels)
