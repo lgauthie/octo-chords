@@ -150,11 +150,15 @@ J(H,P) = \sum_{i,j} m_{P_{i,j}} W_{i,j} log (\frac{m_{P_{i,j}} W_{i,j}}{P_{i,j}}
        + \sum_{i,j} m_{H_{i,j}} W_{i,j} log (\frac{m_{H_{i,j}} W_{i,j}}{H_{i,j}})
        - \sum_{i,j} (W_{i,j} - P_{i,j} - H_{i,j}) + \Omega_{P} + \Omega_{H}
 
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.8\textwidth]{hpssspec.png}
+    \caption{Top: Harmonic result of HPSS, Bottom: Original Signal}
+\end{figure}
 
-- In particular, \cite{Ueda:19} discusses a model
-very similar to our goals. Using the Beatles annotated data set, a 74.24
-percent chord recognition rate was achieved without HPSS, and a 78.48 percent
-chord recognition rate was achieved with it. This is not a trivial increase in
+Ueda \cite{Ueda:19} discusses a model very similar to our goals. Using the Beatles 
+annotated data set, a 74.24 percent chord recognition rate was achieved without HPSS, and 
+a 78.48 percent chord recognition rate was achieved with it. This is not a trivial increase in
 success, and suggests we should should see higher rates of accuracy when the
 HPSS algorithm is applied to the incoming audio.
 
@@ -188,6 +192,16 @@ The authors are mention doing logarithmic compression on the audio data before
 calculating the chroma to account for the logarithmic sensation of sound intensity.
 
 \subsection{Hidden Markov Models}
+
+Detecting the chord sequence \hat{S} can be done using Bayes' theorm.
+\hat{S} = \underset{S}{argmax} P(S|X) = \underset{S}{argmax} P(X|S) P(S)
+Chord transition are approximated by assuming first order Markov property in which a state only depends
+on the previous state and does not depend on any other past states or outputs. The outputs are chroma
+vectors which are emitted stochastically from each states. In this formulation, the maximum probability
+chord sequence is given by
+\hat{S} \simeq  \underset{S}{argmax} P(x_{0}|s_{0}) P(s_{0}) \prod_{t=1}^{T} P(x_{t}|s_{t}) P(s_{t}|s_{t-1})
+and calculated efficiently by the Viterbi algorithm. If the gr \cite{Ueda:01}.
+
 
 Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous,  Hidden Markov Models have become a common method for for automatic chord estimation. In this model, the a given chord depends on the previous chord predicted while all the other chords are hidden. For each song in our data set, the set of chorma vectors are the observations, while the chord labels are our states. 
 
@@ -223,7 +237,7 @@ implementation may use this data to predict key information as well as chords.
 
 \begin{thebibliography}{citations}
 
-\bibitem {McVicar:00}
+\bibitem{McVicar:00}
 M. McVicar, et al.
 "Automatic Chord Estimation for Audio: A Review of the State of the Art"
 {\it IEEE/ACM Transactions on Audio, Speech, and Language Processing},
