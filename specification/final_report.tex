@@ -219,6 +219,22 @@ song in our data set, the set of chorma vectors are the observations, while the 
 
 \subsection{Evaluation}
 
+\begin{table}[h]
+\begin{tabular}{lllll}
+                          & 64 Test Set Avg & All Songs Test Set Avg & All Songs Test Set Max &  \\
+Non-Processed             & 1.0\%           & 1.0\%                  & 20.7\%                 &  \\
+HPSS                      & 1.5\%           & 1.0\%                  & 19.9\%                 &  \\
+Non-Processed - 2 Iter    & 3.2\%           & 2.9\%                  & 44.7\%                 &  \\
+HPSS - 2 Iter             & 3.7\%           & 3.4\%                  & 60.5\%                 &  \\
+Non-Processed - 10 Iter   & 3.5\%           & 3.2\%                  & 38.9\%                 &  \\
+HPSS - 10 Iter            & 4.1\%           & 4.1\%                  & 36.5\%                 &  \\
+Non-Processed - 100 Iter  & 4.2\%           & 3.9\%                  & 17.1\%                 &  \\
+HPSS - 100 Iter           & 5.1\%           & 4.6\%                  & 18.0\%                 &  \\
+100 Songs - 500 Iter      & 5.5\%           & 5.3\%                  & 20.1\%                 &  \\
+HPSS 100 Songs - 500 Iter & 6.2\%           & 6.4\%                  &                        & 
+\end{tabular}
+\end{table}
+
 What worked well? What didn't? Where did most of the errors occur?
 What was our success rate? Did the results improve with HPSS?
 
