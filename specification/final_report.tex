@@ -128,33 +128,30 @@ proposed model can be seen in Figure \ref{fig:overview}.
 
 \section{Model}
 
-\subsection{Pre-Processing}
-Median ﬁlters operate by replacing a given sample in a signal by the median of 
-the signal values in a window around the sample \cite{FitzGerald:11} First step 
-is short time fourier transform then median filtering with kernel sizes 1 and 23 
-followed by the inverse short time fourier transform. Input to the hiss is an N 
+\subsection{PreProcessing}
+Median filters operate by replacing a given sample in a signal by the median of the signal values in a window around the sample \cite{FitzGerald:11} First step is short time fourier transform then median filtering with kernel sizes 1 and 23 followed by the inverse short time fourier transform. Input to the hiss is an N 
 dimensional input array, the audio.
 
 Differences between the adjacent bins along time and frequency are evaluated by
-\Omega_{P} = \frac{1}{2\sigma ^{2}_{P}} \sum_{i,j} (\sqrt{P_{i,j-1}}-\sqrt{P_{i,j}})^{2}
-\Omega_{H} = \frac{1}{2\sigma ^{2}_{H}} \sum_{i,j} (\sqrt{H_{i,j-1}}-\sqrt{H_{i,j}})^{2}
-where \sigma_{P} and \sigma_{H} are parameters to control the degree of time and frequency
+$$\Omega_{P} = \frac{1}{2\sigma ^{2}_{P}} \sum_{i,j} (\sqrt{P_{i,j-1}}-\sqrt{P_{i,j}})^{2}$$
+$$\Omega_{H} = \frac{1}{2\sigma ^{2}_{H}} \sum_{i,j} (\sqrt{H_{i,j-1}}-\sqrt{H_{i,j}})^{2}$$
+where $\sigma_{P}$ and $\sigma_{H}$ are parameters to control the degree of time and frequency
 smoothness.
 
-m_{P_{i,j}} and m_{H_{i,j}} are time-frequency masks which decompose the original
+$m_{P_{i,j}}$ and $m_{H_{i,j}}$ are time-frequency masks which decompose the original
 spectrogram into the H and P componenents. The distance between percussion and
 original, the harmonics and original, and between the percussive and harmonic with
 I-divergence are computed. Then the optimal masks are found by minimizing.
 
-J(H,P) = \sum_{i,j} m_{P_{i,j}} W_{i,j} log (\frac{m_{P_{i,j}} W_{i,j}}{P_{i,j}})
-       + \sum_{i,j} m_{H_{i,j}} W_{i,j} log (\frac{m_{H_{i,j}} W_{i,j}}{H_{i,j}})
-       - \sum_{i,j} (W_{i,j} - P_{i,j} - H_{i,j}) + \Omega_{P} + \Omega_{H}
+$$J(H,P) = \sum_{i,j} m_{P_{i,j}} W_{i,j} log (\frac{m_{P_{i,j}} W_{i,j}}{P_{i,j}})$$
+$$ + \sum_{i,j} m_{H_{i,j}} W_{i,j} log (\frac{m_{H_{i,j}} W_{i,j}}{H_{i,j}})$$
+$$ - \sum_{i,j} (W_{i,j} - P_{i,j} - H_{i,j}) + \Omega_{P} + \Omega_{H}$$
 
-\begin{figure}[p]
-    \centering
-    \includegraphics[width=0.8\textwidth]{hpssspec.png}
-    \caption{Top: Harmonic result of HPSS, Bottom: Original Signal}
-\end{figure}
+%\begin{figure}[p]
+%   \centering
+%    \includegraphics[width=0.8\textwidth]{hpssspec.png}
+%   \caption{Top: Harmonic result of HPSS, Bottom: Original Signal}
+%\end{figure}
 
 Ueda \cite{Ueda:19} discusses a model very similar to our goals. Using the Beatles 
 annotated data set, a 74.24 percent chord recognition rate was achieved without HPSS, and 
@@ -193,14 +190,16 @@ calculating the chroma to account for the logarithmic sensation of sound intensi
 
 \subsection{Hidden Markov Models}
 
-Detecting the chord sequence \hat{S} can be done using Bayes' theorm.
-\hat{S} = \underset{S}{argmax} P(S|X) = \underset{S}{argmax} P(X|S) P(S)
+Detecting the chord sequence $\hat{S}$ can be done using Bayes' theorm.
+$$\hat{S} = \underset{S}{argmax} P(S|X) = \underset{S}{argmax} P(X|S) P(S)$$
 Chord transition are approximated by assuming first order Markov property in which a state only depends
 on the previous state and does not depend on any other past states or outputs. The outputs are chroma
 vectors which are emitted stochastically from each states. In this formulation, the maximum probability
-chord sequence is given by
-\hat{S} \simeq  \underset{S}{argmax} P(x_{0}|s_{0}) P(s_{0}) \prod_{t=1}^{T} P(x_{t}|s_{t}) P(s_{t}|s_{t-1})
-and calculated efficiently by the Viterbi algorithm. If the gr \cite{Ueda:01}.
+chord sequence is given by:
+
+$$\hat{S} \simeq  \underset{S}{argmax} P(x_{0}|s_{0}) P(s_{0}) \prod_{t=1}^{T} P(x_{t}|s_{t}) P(s_{t}|s_{t-1})$$
+
+and calculated efficiently by the Viterbi algorithm. \cite{Ueda:01}.
 
 
 Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous,  Hidden Markov Models have become a common method for for automatic chord estimation. In this model, the a given chord depends on the previous chord predicted while all the other chords are hidden. For each song in our data set, the set of chorma vectors are the observations, while the chord labels are our states. 
