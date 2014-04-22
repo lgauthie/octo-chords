@@ -30,11 +30,10 @@
 \maketitle
 %
 
-
 \section{Abstract}\label{sec:desoutline}
 This project aims to investigate and evaluate some of the current most popular
-strategies for automatic chord estimation. We present a simple HMM-based model 
-for detecting chords form audio signals using chroma vectors. We also evaluate the 
+strategies for automatic chord estimation. We present a simple HMM-based model
+for detecting chords form audio signals using chroma vectors. We also evaluate the
 effectiveness of Harmonic/Percussive Sound Separation (HPSS) as a preprossing step by comparing
 the results of an unaltered data set to the results of a dataset that has undergone
 HPSS preprocessing. Our results show ....EDIT ME.... We concluse by discussing future improvements
@@ -44,19 +43,18 @@ to our model.
 
 Chords describe the harmonic content of a piece of music. Automatic estimation of chords
 has many applications in music information retreival and music annotation. For example,
-automatic chord estimation may be used to inference genre and emotional content 
-(minor, sad; major, happy) of a piece, or to identify songs of similar form. 
+automatic chord estimation may be used to inference genre and emotional content
+(minor, sad; major, happy) of a piece, or to identify songs of similar form.
 They have also been used successfully in detecting cover-songs \cite{Papadopoulos:18}.
 
 Automatic chord detection has been a MIREX task since 2008, and has since seen increased
-improvement, with submissions in 2012 surpassing 72 percent accuracy on unseen data 
-\cite{McVicar:00}. Hidden Markov Models have been used successfully in a number of 
+improvement, with submissions in 2012 surpassing 72 percent accuracy on unseen data
+\cite{McVicar:00}. Hidden Markov Models have been used successfully in a number of
 automatic chord estimation models, including \cite{Ueda:01} \cite{Lee:15} \cite{Ueda:19}
 and \cite{Papadopoulos:18}.
 
 ...EDIT: Write more about previous papers that used HPSS, and beat synchronous extraction
 when you are less a sleepy bear ...
-
 
 \section{Overview}\label{sec:approch}
 
@@ -66,33 +64,33 @@ top 100 chart between the years 1958 and 1991. Each song also includes beat by
 beat chord annotation \cite{Burgoyne:07}. The chords are labeled as either maj,
 min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present or
 detected. A distinction is made between enharmonic labels (for example both
-G\# and Ab occur in the annotations), for a total of 128 states. 
+G\# and Ab occur in the annotations), for a total of 128 states.
 For the scope of this project we will not try to classify inverted
 chords and 7th chords independently, and instead will classify them as one of
 the previously mentioned classes.
 
 We use two sets of audio data, one unprocessed, and one preprocessed by
-performing harmonic percussive source separation (HPSS). It has been noted that 
-applying this pre processing step can greatly improve chord estimation accuracy \cite{Reed:09}. 
-In a spectrogram the harmonic components of a musical signal have 
-a stable pitch and form parallel ridges along the time axis. Transient sounds distribute 
-their frequency content across the entire spectrum and occur during short time frames, 
-which can be seen as spikes in the frequency axis. The end product of HPSS is two signals, 
-one with mostly harmonic content, the other with percussive sounds which is obtained by 
+performing harmonic percussive source separation (HPSS). It has been noted that
+applying this pre processing step can greatly improve chord estimation accuracy \cite{Reed:09}.
+In a spectrogram the harmonic components of a musical signal have
+a stable pitch and form parallel ridges along the time axis. Transient sounds distribute
+their frequency content across the entire spectrum and occur during short time frames,
+which can be seen as spikes in the frequency axis. The end product of HPSS is two signals,
+one with mostly harmonic content, the other with percussive sounds which is obtained by
 complementary diffusion on the spectrogram.
 
-Each audio file is mixed to mono to reduce processing time. Then Chorma vector extraction is 
-performed on the two auto datasets at intervals corresponding to the beat information in the 
-annotated data. Each chroma vector is a real valued vector which contains the salience of each 
+Each audio file is mixed to mono to reduce processing time. Then Chorma vector extraction is
+performed on the two auto datasets at intervals corresponding to the beat information in the
+annotated data. Each chroma vector is a real valued vector which contains the salience of each
 of the pitch classes (C, C\#.... B) for a given time window.
 
 After extracting the chroma vectors for each song in the data set, 63 of the tracks are randomly
 chosen using the random function in python and kept as testing data. The rest of the data set
-is used to train our HMM model. Hidden Markov Models (HMMs) are currently the most common method for 
+is used to train our HMM model. Hidden Markov Models (HMMs) are currently the most common method for
 predicting chord labels, and also produce high accuracy scores. Previous use of
 preprocessing of input data has also been explored and is summarized in \cite{McVicar:00}.
 
-To create a supervised model, the transition matrix, prior, and mean and convariance of the 
+To create a supervised model, the transition matrix, prior, and mean and convariance of the
 vectors is created and run through functions available through
 SciKit Learn for convenient training and testing. A full overview of our
 proposed model can be seen in Figure \ref{fig:overview}.
@@ -129,8 +127,9 @@ proposed model can be seen in Figure \ref{fig:overview}.
 \section{Model}
 
 \subsection{PreProcessing}
-Median filters operate by replacing a given sample in a signal by the median of the signal values in a window around the sample \cite{FitzGerald:11} First step is short time fourier transform then median filtering with kernel sizes 1 and 23 followed by the inverse short time fourier transform. Input to the hiss is an N 
-dimensional input array, the audio.
+Median filters operate by replacing a given sample in a signal by the median of the signal values in a window around the
+sample \cite{FitzGerald:11} First step is short time fourier transform then median filtering with kernel sizes 1 and 23
+followed by the inverse short time fourier transform. Input to the hiss is an N dimensional input array, the audio.
 
 Differences between the adjacent bins along time and frequency are evaluated by
 $$\Omega_{P} = \frac{1}{2\sigma ^{2}_{P}} \sum_{i,j} (\sqrt{P_{i,j-1}}-\sqrt{P_{i,j}})^{2}$$
@@ -144,8 +143,8 @@ original, the harmonics and original, and between the percussive and harmonic wi
 I-divergence are computed. Then the optimal masks are found by minimizing.
 
 $$J(H,P) = \sum_{i,j} m_{P_{i,j}} W_{i,j} log (\frac{m_{P_{i,j}} W_{i,j}}{P_{i,j}})$$
-$$ + \sum_{i,j} m_{H_{i,j}} W_{i,j} log (\frac{m_{H_{i,j}} W_{i,j}}{H_{i,j}})$$
-$$ - \sum_{i,j} (W_{i,j} - P_{i,j} - H_{i,j}) + \Omega_{P} + \Omega_{H}$$
+$$       + \sum_{i,j} m_{H_{i,j}} W_{i,j} log (\frac{m_{H_{i,j}} W_{i,j}}{H_{i,j}})$$
+$$       - \sum_{i,j} (W_{i,j} - P_{i,j} - H_{i,j}) + \Omega_{P} + \Omega_{H}$$
 
 \begin{figure}
    \centering
@@ -154,8 +153,8 @@ $$ - \sum_{i,j} (W_{i,j} - P_{i,j} - H_{i,j}) + \Omega_{P} + \Omega_{H}$$
    \label{fig:HPSS}
 \end{figure}
 
-Ueda \cite{Ueda:19} discusses a model very similar to our goals. Using the Beatles 
-annotated data set, a 74.24 percent chord recognition rate was achieved without HPSS, and 
+Ueda \cite{Ueda:19} discusses a model very similar to our goals. Using the Beatles
+annotated data set, a 74.24 percent chord recognition rate was achieved without HPSS, and
 a 78.48 percent chord recognition rate was achieved with it. This is not a trivial increase in
 success, and suggests we should should see higher rates of accuracy when the
 HPSS algorithm is applied to the incoming audio.
@@ -166,11 +165,11 @@ HPSS algorithm is applied to the incoming audio.
 
 \subsection{Chromogram Computation}
 
-To compute the 12-dimensional chroma vectors (or Pitch Class Profiles), we used the 
-Spectrum2Chroma Marsystem available in Marsyas, which is based on the MATLAB algorithm 
+To compute the 12-dimensional chroma vectors (or pitch class profiles), we used the
+Spectrum2Chroma Marsystem available in Marsyas, which is based on the MATLAB algorithm
 fft2chromamx.m written by Dan Ellis.
-Each chroma vector represents the intensity the 12 pitch classes at each window of 
-samples from the audio file. 
+Each chroma vector represents the intensity the 12 pitch classes at each window of
+samples from the audio file.
 
 Because most chord transitions occur on beats, extrating chorma information for blocks corresponding
 to each beat has shown to be beneficial in creating an more accurate automatic chord
@@ -179,6 +178,13 @@ the reults by six percent. In \cite{McVicor:00}, it is mentioned that this metho
 of chords between beats, and reduces the overall computational cost by reducing the total
 number of windows. Because the Billboard data is annotation at beat times, this approach naturally
 lines up with our ground truth data.
+
+\begin{figure}
+   \centering
+    \includegraphics[width=0.5\textwidth]{187.png}
+   \caption{Extracted Chroma Vector}
+   \label{fig:Chroma}
+\end{figure}
 
 EDIT: INSERT PICTURE OF AN EXTRACTED CHROMA VECTOR
 
@@ -203,7 +209,10 @@ $$\hat{S} \simeq  \underset{S}{argmax} P(x_{0}|s_{0}) P(s_{0}) \prod_{t=1}^{T} P
 and calculated efficiently by the Viterbi algorithm. \cite{Ueda:01}.
 
 
-Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous,  Hidden Markov Models have become a common method for for automatic chord estimation. In this model, the a given chord depends on the previous chord predicted while all the other chords are hidden. For each song in our data set, the set of chorma vectors are the observations, while the chord labels are our states. 
+Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous
+Hidden Markov Models have become a common method for for automatic chord estimation. In this model, the
+a given chord depends on the previous chord predicted while all the other chords are hidden. For each
+song in our data set, the set of chorma vectors are the observations, while the chord labels are our states.
 
 - deets on how HMMs work and how our code does things.
 - pic of transition matrix results for some track.
@@ -213,8 +222,6 @@ Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequ
 What worked well? What didn't? Where did most of the errors occur?
 What was our success rate? Did the results improve with HPSS?
 
-Hey look a dinosaur.
-
 \section{Conclusion and Future Work}
 
 We have introduced a simple beat-synchronous automatic chord estimation model
@@ -222,18 +229,16 @@ and evaluated the effectiveness of HPSS as a preprocessing step.
 
 Exploration of tuning, different hmm models (ex, better model for less frequent chords)
 
-One preprocessing step that we have not considered in this paper is tuning. Because tuning pitch 
-may differ between recordings, it may be necessary to consider different candidate chroma vectors. 
+One preprocessing step that we have not considered in this paper is tuning. Because tuning pitch
+may differ between recordings, it may be necessary to consider different candidate chroma vectors.
 \cite{McVicar:00} suggests that tuning using Harte's tuning algorithm is a staple of most modern
-algorithms. Some older papers such as \cite{Zenz:20} mention micro--tuning of the human voice as well 
-as percussive sounds as sources of classification error, so tuning algorithms may be worth investigating 
-as a future preprocessing stepin addition to HPSS. 
+algorithms. Some older papers such as \cite{Zenz:20} mention micro--tuning of the human voice as well
+as percussive sounds as sources of classification error, so tuning algorithms may be worth investigating
+as a future preprocessing stepin addition to HPSS.
 
-Each song in the Billboard dataset also includes key information. It is possible to use the HMM model to 
+Each song in the Billboard dataset also includes key information. It is possible to use the HMM model to
 simultaneously estimate the chords and the key of an input audio file \cite{McVicar:00}, so a future
 implementation may use this data to predict key information as well as chords.
-
-
 
 \begin{thebibliography}{citations}
 
@@ -270,7 +275,7 @@ pp.~127-132, 2012.
 
 \bibitem{Schorkhuber:05}
 Christian Schorkhuber and Anssi Kalpuri
-"Constant-Q Transform Toolbox for Music Processing" 
+"Constant-Q Transform Toolbox for Music Processing"
 {\it 7th Sound and Music Computing Conference, Barcelona, Spain},
 July 2010.
 
@@ -368,13 +373,13 @@ pp.~1175-1178, 2007.
 Dan Ellis
 "Supervised Chord Recognition for Music Audio in Matlab"
 {\it LabROSA: Projects http://labrosa.ee.columbia.edu/projects/chords/},
-2010. Last Accessed: Apr 17, 2014. 
+2010. Last Accessed: Apr 17, 2014.
 
 \bibitem{Jiang:22}
 Nanzhu Jiang, Peter Grosche, Verena Konz, and Meinard Muller.
 "Analyzing Chroma Feature Types for Automated Chord Recognition"
 {\it AES 42nd International Conference},
-July 2011. 
+July 2011.
 
 \end{thebibliography}
 
