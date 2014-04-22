@@ -115,7 +115,7 @@ def load_feats_labels(file_list):
     for path in file_list:
         with open(path, 'r') as f:
             contents = np.array(
-                [l[0:-1].split(',') for l in f if not l[0] in ['%', '@', '\n']]
+                [l[0:-1].split(',') for l in f if not l[0] in ['%', '@', '\n'] and l[-1] != 'X']
             )
             labels.append([label_filt(label) for label in contents[:,-1]])
             features.append([map(float, feat) for feat in contents[:,0:-1]])

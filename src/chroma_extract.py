@@ -11,7 +11,8 @@ def main():
     with open(fname, 'r') as f:
         file_data = np.array([line.split() for line in f if len(line.split()) == 3])
 
-    time_data = [(float(item[0]), float(item[1]), item[2]) for item in file_data[:,0:3]]
+    time_data =  [(float(item[0]), float(item[1]), item[2])
+                  for item in file_data[:,0:3]]
     print time_data[1]
 
     netspec = ["Series/net",
