@@ -135,8 +135,20 @@ is short time fourier transform then median filtering with kernel sizes 1 and 23
 followed by the inverse short time fourier transform. Input to the hiss is an N 
 dimensional input array, the audio.
 
-http://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm#Filtering_and_smoothing_EM_algorithms
+Differences between the adjacent bins along time and frequency are evaluated by
+\Omega_{P} = \frac{1}{2\sigma ^{2}_{P}} \sum_{i,j} (\sqrt{P_{i,j-1}}-\sqrt{P_{i,j}})^{2}
+\Omega_{H} = \frac{1}{2\sigma ^{2}_{H}} \sum_{i,j} (\sqrt{H_{i,j-1}}-\sqrt{H_{i,j}})^{2}
+where \sigma_{P} and \sigma_{H} are parameters to control the degree of time and frequency
+smoothness.
 
+m_{P_{i,j}} and m_{H_{i,j}} are time-frequency masks which decompose the original
+spectrogram into the H and P componenents. The distance between percussion and
+original, the harmonics and original, and between the percussive and harmonic with
+I-divergence are computed. Then the optimal masks are found by minimizing.
+
+J(H,P) = \sum_{i,j} m_{P_{i,j}} W_{i,j} log (\frac{m_{P_{i,j}} W_{i,j}}{P_{i,j}})
+       + \sum_{i,j} m_{H_{i,j}} W_{i,j} log (\frac{m_{H_{i,j}} W_{i,j}}{H_{i,j}})
+       - \sum_{i,j} (W_{i,j} - P_{i,j} - H_{i,j}) + \Omega_{P} + \Omega_{H}
 
 
 - In particular, \cite{Ueda:19} discusses a model
