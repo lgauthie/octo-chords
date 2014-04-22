@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import sys
 import numpy as np
 
@@ -13,7 +11,7 @@ def main():
     with open(fname, 'r') as f:
         file_data = np.array([line.split() for line in f if len(line.split()) == 3])
 
-    time_data =  [(float(item[0]), float(item[1]), item[2]) for item in file_data[:,0:3]]
+    time_data = [(float(item[0]), float(item[1]), item[2]) for item in file_data[:,0:3]]
     print time_data[1]
 
     netspec = ["Series/net",
@@ -23,19 +21,21 @@ def main():
          "ShiftOutput/shift",
          "Spectrum/spec",
          "PowerSpectrum/pspec",
-         "Spectrum2Chroma/chroma",
+         "Chroma/chroma",
          "Inject/inj", # add extra sample to hold label
          "WekaSink/wekout"
         ]]
     net = create(netspec)
 
     net.updControl("SoundFileSource/src/mrs_string/filename", fname2)
-    net.updControl("Windowing/window/mrs_natural/zeroPadding", N)
+    #net.updControl("Windowing/window/mrs_natural/zeroPadding", N)
     net.updControl("ShiftOutput/shift/mrs_natural/Interpolation", N)
     #net.updControl("Windowing/window/mrs_natural/size", N)
+    net.updControl("Chroma/chroma/mrs_natural/lowOctNum", 1)
+    net.updControl("Chroma/chroma/mrs_natural/highOctNum", 5)
 
     notes = [
-        'A',  'B',  'C',  'D',  'E',  'F',  'G',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G',
         'A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G#',
         'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'Fb', 'Gb',
     ]
