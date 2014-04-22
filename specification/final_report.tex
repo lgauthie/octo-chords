@@ -127,15 +127,16 @@ proposed model can be seen in Figure \ref{fig:overview}.
 \section{Model}
 
 \subsection{PreProcessing}
-Used Librosa stuff
+Harmonic percussive source separatin was completed using the Librosa package created by Brian McFee.
+The package is written in Python and uses scikit to perform two dimensional median filtering. The
+STFT and ISTFT are both custom implementations. The median filters operates by replacing a given sample
+in a signal by the median of the signal values in a window around the sample \cite{FitzGerald:11}. The input
+audio is mixed to mono and the original 44.1 kHz sampling rate is used. Differences between the adjacent
+bins along time and frequency are evaluated by,
 
-Median filters operate by replacing a given sample in a signal by the median of the signal values in a window around the
-sample \cite{FitzGerald:11} First step is short time fourier transform then median filtering with kernel sizes 1 and 23
-followed by the inverse short time fourier transform. Input to the hiss is an N dimensional input array, the audio.
-
-Differences between the adjacent bins along time and frequency are evaluated by
 $$\Omega_{P} = \frac{1}{2\sigma ^{2}_{P}} \sum_{i,j} (\sqrt{P_{i,j-1}}-\sqrt{P_{i,j}})^{2}$$
 $$\Omega_{H} = \frac{1}{2\sigma ^{2}_{H}} \sum_{i,j} (\sqrt{H_{i,j-1}}-\sqrt{H_{i,j}})^{2}$$
+
 where $\sigma_{P}$ and $\sigma_{H}$ are parameters to control the degree of time and frequency
 smoothness.
 
@@ -145,8 +146,12 @@ original, the harmonics and original, and between the percussive and harmonic wi
 I-divergence are computed. Then the optimal masks are found by minimizing.
 
 $$J(H,P) = \sum_{i,j} m_{P_{i,j}} W_{i,j} log (\frac{m_{P_{i,j}} W_{i,j}}{P_{i,j}})$$
-$$       + \sum_{i,j} m_{H_{i,j}} W_{i,j} log (\frac{m_{H_{i,j}} W_{i,j}}{H_{i,j}})$$
-$$       - \sum_{i,j} (W_{i,j} - P_{i,j} - H_{i,j}) + \Omega_{P} + \Omega_{H}$$
+$$ + \sum_{i,j} m_{H_{i,j}} W_{i,j} log (\frac{m_{H_{i,j}} W_{i,j}}{H_{i,j}})$$
+$$ - \sum_{i,j} (W_{i,j} - P_{i,j} - H_{i,j}) + \Omega_{P} + \Omega_{H}$$
+
+These masks are then applied to the original spectrogram producing the H and P spectrograms.
+Each spectrogram is translated back to the time domain where it can then be run through the
+feature extraction system.
 
 \begin{figure}
    \centering
