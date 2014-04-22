@@ -166,10 +166,6 @@ a 78.48 percent chord recognition rate was achieved with it. This is not a trivi
 success, and suggests we should should see higher rates of accuracy when the
 HPSS algorithm is applied to the incoming audio.
 
-- How were the HPSS's implemented?
-- more deets on how these work
-- picture of previous spectrum, and then the hpss spectrum maybe? T'be radskis.
-
 \subsection{Chromogram Computation}
 
 To compute the 12-dimensional chroma vectors (or pitch class profiles), we used the
@@ -193,10 +189,15 @@ lines up with our ground truth data.
    \label{fig:Chroma}
 \end{figure}
 
-EDIT: INSERT PICTURE OF AN EXTRACTED CHROMA VECTOR
+\begin{figure}
+   \centering
+    \includegraphics[width=0.5\textwidth]{187h.png}
+   \caption{Extracted Chroma Vector after HPSS}
+   \label{fig:ChromaHPSS}
+\end{figure}
 
 - did we multiple by log? normalize? Talk about strategy we exentually went with.
-- \cite{Jiang:22} investigates different preprocessing steps. Discusses that
+\cite{Jiang:22} investigates different preprocessing steps. Discusses that
 an HMM model does it's own kind of temporal smoothing in the classification
 stage, and that applying an additional smoothing process doesn't increase results much.
 The authors are mention doing logarithmic compression on the audio data before
@@ -223,6 +224,13 @@ song in our data set, the set of chorma vectors are the observations, while the 
 
 - deets on how HMMs work and how our code does things.
 - pic of transition matrix results for some track.
+
+\begin{figure}
+   \centering
+    \includegraphics[width=0.5\textwidth]{trans-h.png}
+   \caption{Transition Matrix}
+   \label{fig:trans-h}
+\end{figure}
 
 \subsection{Evaluation}
 
