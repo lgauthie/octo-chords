@@ -282,13 +282,17 @@ chord progression that was most likely to have produced the given sequence of ch
 
 \subsection{Evaluation}
 
-\cite{Danellis:23} problems with viterbi...
-
+Despite creating the initial values to train the data with supervised learning, we were unable to optimize
+the Viterbi algorithm to find the optimal path through the states. Because it uses recognition, and not 
+a forced alignment technique, the algorithm assumes any chord may follow another, even if those state transitions
+never appeared in the training data. \cite{Danellis:23} discusses the impact of this optimization on an 
+EM-Trained HMM chord model. Without the forced alignment, results using chromagrams were as low
+as 10 percent on a small set of Beatles song data. When forced alignment was used, and the algorithm only
+assumed progressions in the test data were valid, results on the same test set increased by over 16 percent. 
 Hey look a dinosaur.
-What worked well? What didn't? Where did most of the errors occur?
-What was our success rate? Did the results improve with HPSS?
 
-Hey look a dinosaur.
+
+EDIT ME
 
 \section{Conclusion and Future Work}
 
