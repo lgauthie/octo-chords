@@ -49,30 +49,40 @@ chroma vectors
 
 \section{Introduction}\label{sec:intro}
 
-Chords describe the harmonic content of a piece of music. Automatic estimation of chords
-has many applications in music information retrieval and music annotation. For example,
-automatic chord estimation may be used to inference genre and emotional content 
-(minor, sad; major, happy) of a piece, or to identify songs of similar form.
-It has also been used successfully in detecting cover-songs \cite{Papadopoulos:18}.
+Chords describe the harmonic content of a piece of music. Automatic estimation
+of chords has many applications in music information retrieval and music
+annotation. For example, automatic chord estimation may be used to inference
+genre and emotional content (minor, sad; major, happy) of a piece, or to
+identify songs of similar form.  It has also been used successfully in
+detecting cover-songs \cite{Papadopoulos:18}.
 
-Automatic chord detection has been a MIREX task since 2008, and has since seen increased
-improvement, with submissions in 2012 surpassing 72 percent accuracy on unseen data
-\cite{McVicar:00}. Hidden Markov Models have been used as a successful modeling stategy
- in a number of automatic chord estimation models, including \cite{Ueda:01} \cite{Lee:15} \cite{Ueda:19}
-and \cite{Papadopoulos:18}. All of these models use chroma vectors (Pitch Class Profiles)
-at the feature extraction phase, which represent the pitch content for a song for each sampled
-window. Each chroma vector is a real valued vector which contains the salience of each of the 
-pitch classes (C, C\#.... B) for a given time window. \cite{McVicar:00},  \cite{Lee:15}, \cite{Papadopoulos:18}, and\cite{Zenz:20} have all found that chroma extraction on beats improves results, as chords more frequently change on beats.
+Automatic chord detection has been a MIREX task since 2008, and has since seen
+increased improvement, with submissions in 2012 surpassing 72 percent accuracy
+on unseen data \cite{McVicar:00}. Hidden Markov Models have been used as a
+successful modeling stategy in a number of automatic chord estimation models,
+including \cite{Ueda:01} \cite{Lee:15} \cite{Ueda:19} and
+\cite{Papadopoulos:18}. All of these models use chroma vectors (Pitch Class
+Profiles) at the feature extraction phase, which represent the pitch content
+for a song for each sampled window. Each chroma vector is a real valued vector
+which contains the salience of each of the pitch classes (C, C\#.... B) for a
+given time window. \cite{McVicar:00},  \cite{Lee:15}, \cite{Papadopoulos:18},
+and\cite{Zenz:20} have all found that chroma extraction on beats improves
+results, as chords more frequently change on beats.
 
-Another method to improve the resolution of chromagrams is filtering out transient and precussive
-information that does not contribute to the harmonic content, but may add noise to the extracted
-chromagram. A simple technique for this, is to filter the frequencies where chromas are extracted
-so that they are restructed to the range with the most pitch content. Another is to supress harmonic
-and percussive sounds using harmonic/percussive sound seperation (HPSS).  It has been noted that 
-applying this pre processing step can greatly improve chord estimation accuracy \cite{Reed:09}. 
-In a spectrogram the harmonic components of a musical signal have  a stable pitch and form parallel ridges along the time axis. Transient sounds distribute  their frequency content across the entire spectrum and occur during short time frames, which can be seen as spikes in the frequency axis. The end product of HPSS is two signals, 
-one with mostly harmonic content, the other with percussive sounds which is obtained by 
-complementary diffusion on the spectrogram.
+Another method to improve the resolution of chromagrams is filtering out
+transient and precussive information that does not contribute to the harmonic
+content, but may add noise to the extracted chromagram. A simple technique for
+this, is to filter the frequencies where chromas are extracted so that they are
+restructed to the range with the most pitch content. Another is to supress
+harmonic and percussive sounds using harmonic/percussive sound seperation
+(HPSS).  It has been noted that applying this pre processing step can greatly
+improve chord estimation accuracy \cite{Reed:09}.  In a spectrogram the
+harmonic components of a musical signal have  a stable pitch and form parallel
+ridges along the time axis. Transient sounds distribute  their frequency
+content across the entire spectrum and occur during short time frames, which
+can be seen as spikes in the frequency axis. The end product of HPSS is two
+signals, one with mostly harmonic content, the other with percussive sounds
+which is obtained by complementary diffusion on the spectrogram.  
 
 \section{Overview}\label{sec:approch}
 
@@ -80,13 +90,13 @@ For this project used part of the annotated Billboard 100 data set. Our data
 set includes audio files for approximately 650 audio files from the Billboard
 top 100 chart between the years 1958 and 1991. Each song also includes beat by
 beat chord annotation \cite{Burgoyne:07}. The chords are labeled as either maj,
-min, aug, dim, sus2, sus4, or N, where N imply no chord is present. A distinction 
-is made between enharmonic labels (for example both G\# and Ab occur in the 
-annotations), for a total of 128 chord labels. 
+min, aug, dim, sus2, sus4, or N, where N imply no chord is present. A
+distinction is made between enharmonic labels (for example both G\# and Ab
+occur in the annotations), for a total of 128 chord labels. 
 
-For our the scope of our project we reduced this number by combining the 
+For our the scope of our project we reduced this number by combining the
 enharmonic labels and reassigning the chord labels into two classes: major and
-minor, as seen in Figure \ref{fig:chordlabs}. Combined with the no chord label, 
+minor, as seen in Figure \ref{fig:chordlabs}. Combined with the no chord label,
 we considered 25 distinct chord labels.
 
 \begin{figure}
@@ -106,15 +116,18 @@ we considered 25 distinct chord labels.
 \end{figure}
 
 We used two sets of audio data, one unprocessed, and one preprocessed by
-performing harmonic percussive source separation (HPSS). Each audio file was mixed
-to mono to reduce processing time. Then chormagram extraction was
-performed on the two auto datasets at intervals corresponding to the beat information in the 
-annotated data, and only considered information from octaves 1 through 5 (approximately 60-1000Hz).
+performing harmonic percussive source separation (HPSS). Each audio file was
+mixed to mono to reduce processing time. Then chormagram extraction was
+performed on the two auto datasets at intervals corresponding to the beat
+information in the annotated data, and only considered information from octaves
+1 through 5 (approximately 60-1000Hz).
 
-After extracting the chromagram for each song in the data set, 63 of the tracks were randomly
-chosen using the random function in Python and kept as testing data. The rest of the data set
-was used to train our HMM model. Because SciKit Learn only provides an unsupervised HMM, we calculated the initial transition matrix, prior probability, mean and convariance of the 
-vectors to feed into SciKit learn as initial values.
+After extracting the chromagram for each song in the data set, 63 of the tracks
+were randomly chosen using the random function in Python and kept as testing
+data. The rest of the data set was used to train our HMM model. Because SciKit
+Learn only provides an unsupervised HMM, we calculated the initial transition
+matrix, prior probability, mean and convariance of the vectors to feed into
+SciKit learn as initial values.
 
 A full overview of our proposed model can be seen in Figure \ref{fig:overview}.
 
@@ -220,11 +233,13 @@ chords between beats, and reduces the overall computational cost by reducing
 the total number of windows. Because the Billboard data is annotation at beat
 times, this approach naturally lines up with our ground truth data.
 
-Two sets of chromagrams were calcualted for our dataset, one set without HPSS applied to
-the audio, and one set without. A comparison of the resulting chromagrams for part of the 
-song "Help Is On The Way" by the Little River Band can be seen in figures \ref{fig:ChromaNorm} and \ref{fig:ChromaHPSS}  respectively. In these figures,
-the y-axis corresponds to the chord labels C(1), C\#(2), D(3), etc. It's clear to see that
-after the HPSS processing, the chromas become much cleaner.
+Two sets of chromagrams were calcualted for our dataset, one set without HPSS
+applied to the audio, and one set without. A comparison of the resulting
+chromagrams for part of the song "Help Is On The Way" by the Little River Band
+can be seen in figures \ref{fig:ChromaNorm} and \ref{fig:ChromaHPSS}
+respectively. In these figures, the y-axis corresponds to the chord labels
+C(1), C\#(2), D(3), etc. It's clear to see that after the HPSS processing, the
+chromas become much cleaner.
 
 \begin{figure}
 	\centering
@@ -242,7 +257,12 @@ after the HPSS processing, the chromas become much cleaner.
 
 \subsection{Hidden Markov Models}
 
-Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous,  Hidden Markov Models have become a common method for for automatic chord estimation. In this model, the a given chord depends on the previous chord predicted while all the other chords are hidden. For each song in our data set, the set of chorma vectors are the observations, while the chord labels are our states. 
+Hidden Markov Models (HMMs) are a model for time-series data. Because chord
+sequences are continuous,  Hidden Markov Models have become a common method for
+for automatic chord estimation. In this model, the a given chord depends on the
+previous chord predicted while all the other chords are hidden. For each song
+in our data set, the set of chorma vectors are the observations, while the
+chord labels are our states.
 
 \begin{figure}
    \centering
@@ -266,18 +286,19 @@ and evaluated the effectiveness of HPSS as a preprocessing step.
 
 Exploration of tuning, different hmm models (ex, better model for less frequent chords)
 
-One preprocessing step that we have not considered in this paper is tuning. Because tuning pitch 
-may differ between recordings, it may be necessary to consider different candidate chroma vectors. 
-\cite{McVicar:00} suggests that tuning using Harte's tuning algorithm is a staple of most modern
-algorithms. Some older papers such as \cite{Zenz:20} mention micro--tuning of the human voice as well 
-as percussive sounds as sources of classification error, so tuning algorithms may be worth investigating 
-as a future preprocessing stepin addition to HPSS. 
+One preprocessing step that we have not considered in this paper is tuning.
+Because tuning pitch may differ between recordings, it may be necessary to
+consider different candidate chroma vectors.  \cite{McVicar:00} suggests that
+tuning using Harte's tuning algorithm is a staple of most modern algorithms.
+Some older papers such as \cite{Zenz:20} mention micro--tuning of the human
+voice as well as percussive sounds as sources of classification error, so
+tuning algorithms may be worth investigating as a future preprocessing stepin
+addition to HPSS. 
 
-Each song in the Billboard dataset also includes key information. It is possible to use the HMM model to 
-simultaneously estimate the chords and the key of an input audio file \cite{McVicar:00}, so a future
-implementation may use this data to predict key information as well as chords.
-
-
+Each song in the Billboard dataset also includes key information. It is
+possible to use the HMM model to simultaneously estimate the chords and the key
+of an input audio file \cite{McVicar:00}, so a future implementation may use
+this data to predict key information as well as chords.
 
 \begin{thebibliography}{citations}
 
@@ -418,7 +439,13 @@ Dan Ellis
 Nanzhu Jiang, Peter Grosche, Verena Konz, and Meinard Muller.
 "Analyzing Chroma Feature Types for Automated Chord Recognition"
 {\it AES 42nd International Conference},
-July 2011. 
+July 2011.
+
+\bibitem{Danellis:23}
+Alexander Sheh and Daniel P.W. Ellis
+"Chord Segmentation and Recognition using EM-Trained Hidden Markov Models"
+{\it International Symposium on Music Information Retrieval},
+October 2003.
 
 \end{thebibliography}
 
