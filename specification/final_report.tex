@@ -228,22 +228,14 @@ calculating the chroma to account for the logarithmic sensation of sound intensi
 
 \subsection{Hidden Markov Models}
 
-Detecting the chord sequence $\hat{S}$ can be done using Bayes' theorm.
-$$\hat{S} = \underset{S}{argmax} P(S|X) = \underset{S}{argmax} P(X|S) P(S)$$
-Chord transition are approximated by assuming first order Markov property in which a state only depends
-on the previous state and does not depend on any other past states or outputs. The outputs are chroma
-vectors which are emitted stochastically from each states. In this formulation, the maximum probability
-chord sequence is given by:
-
-$$\hat{S} \simeq  \underset{S}{argmax} P(x_{0}|s_{0}) P(s_{0}) \prod_{t=1}^{T} P(x_{t}|s_{t}) P(s_{t}|s_{t-1})$$
-
-and calculated efficiently by the Viterbi algorithm. \cite{Ueda:01}.
-
-
 Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous,  Hidden Markov Models have become a common method for for automatic chord estimation. In this model, the a given chord depends on the previous chord predicted while all the other chords are hidden. For each song in our data set, the set of chorma vectors are the observations, while the chord labels are our states. 
 
-- deets on how HMMs work and how our code does things.
-- pic of transition matrix results for some track.
+\begin{figure}
+   \centering
+    \includegraphics[width=0.5\textwidth]{trans-h.png}
+   \caption{Top: Initial Transition Matrix}
+   \label{fig:transmath}
+\end{figure}
 
 \subsection{Evaluation}
 
