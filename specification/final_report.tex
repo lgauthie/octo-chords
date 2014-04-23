@@ -76,7 +76,7 @@ this is to filter the frequencies where chromas are extracted so that they are
 restricted to the range with the most pitch content. Another is to suppress
 harmonic and percussive sounds using harmonic/percussive sound separation
 (HPSS).  It has been noted that applying this preprocessing step can greatly
-improve chord estimation accuracy ~\cite{Reed:09}.
+improve chord estimation accuracy~\cite{Reed:09}.
 
 \section{Overview}\label{sec:approch}
 
@@ -235,7 +235,7 @@ windows corresponding to each beat has shown to be beneficial to creating an
 more accurate automatic chord estimation model. For example, in~\cite{Zenz:20},
 extracting chroma vectors on beats improved the results by 6 percent. This method 
 exploits the stability of chords between beats, and reduces the overall computational 
-cost by reducing the total number of windows \cite{McVicor:00}. Because the Billboard 
+cost by reducing the total number of windows~\cite{McVicor:00}. Because the Billboard 
 data is annotation at beat times, this approach naturally lines up with our ground truth data.
 
 Two sets of chromagrams were calculated for our dataset, one set with HPSS
@@ -250,8 +250,8 @@ chromas become much cleaner.
 
 Hidden Markov Models (HMMs) are a probabalistic model for time-series data. Because chord
 sequences are continuous,  Hidden Markov Models have become a common method for
-for automatic chord estimation and adapts well to the continuous nature of chord sequences. 
-In this model, a given chord depends only on the previous chord predicted while all the other chords 
+for automatic chord estimation and adapts well to the continuous nature of chord sequences.
+In this model, a given chord depends only on the previous chord predicted while all the other chords
 are hidden. For each song in our data set, the set of chorma vectors are the observations,
 while the chord labels are our states.
 
@@ -261,44 +261,53 @@ prior probability, covariance and mean of the chromas  (which are represented as
 a 12-dimensional Gaussian distribution) to construct our initial transition
 matrix.  This transition matrix represents the probability of one chord
 transitioning to another, independent of the previous chords.  This was based
-off of Dan Ellis' Matlab code available through LabROSA\@. Due to the large size
+off of Dan Ellis' Matlab code available through Labrosa. Due to the large size
 of our dataset, using Matlab was infeasible for processing time, so this was
 rewritten into Python to be fed into SciKit's GaussianHMM model.
 
-SciKit uses the Expectation Maximization (EM) algorithm to train the model and the 
+SciKit uses the Expectation Maximization (EM) algorithm to train the model and the
 Viterbi algorithm to predict the most likely chord progression given a sequence
 of chroma vectors. The number of iterations for the EM algorithm is specified by the user. For
 comparison, we also trained our unprocessed and our processed data using 2,
-10, and 100 iterations of the unsupervised EM algorithm. We also ran a random 
+10, and 100 iterations of the unsupervised EM algorithm. We also ran a random
 subset of 100 songs from each data set though 500 iterations.
 
-To test our model, we used two training and testing sets. First, the model was trained
-and tested with all of the data. Secondly, 63 random songs were removed from the data
-set and reserved for testing while the rest were used to training. 
+To test our model, we used two training and testing sets. First, the model was
+trained and tested with all of the data. Secondly, 63 random songs were removed
+from the data set and reserved for testing while the rest were used to
+training.
 
 \begin{figure}
    \centering
    \includegraphics[width=0.4\textwidth]{trans-h.png}
-   \caption{Initial Transition Matrix}\label{fig:transmath}
+   \caption{Transition Matrix}\label{fig:transmath}
 \end{figure}
 
 \subsection{Evaluation}
 
 Despite creating the initial values to train the data with supervised learning,
-the Viterbi algorithm to predict the correct chords in most cases. Partly this
+the Viterbi algorithm failed to predict the correct chords in most cases. Partly this
 is caused by simply starting with the wrong chord. And example of this is a
 song in they key of Ab major, but the first predicted chord is Bb major. It is
 likely that the model with keep predicting chords relative to Bb major, and
 therefore will miss-classify all of the chords for that particular song.
 Overall this lead to inconsistent results where most songs had very low
-accuracy 0--5\%, but some songs had 20--30\% accuracy.
+accuracy 0--5\%, but some songs had accuracy as high as 20--30\%.
+
+%                               & 64 Test Set Avg & All Songs Test Set Avg & All Songs Test Set Max  \\ \midrule
+%	Non-Processed               & 1.0\%           & 1.0\%                  & 20.7\%   \\
+%	HPSS                        & 1.5\%           & 1.0\%                  & 19.9\%   \\
+%	Non-Processed --- 2 Iter    & 3.2\%           & 2.9\%                  & 44.7\%   \\
+%	HPSS --- 2 Iter             & 3.7\%           & 3.4\%                  & 60.5\%   \\
+%	Non-Processed --- 10 Iter   & 3.5\%           & 3.2\%                  & 38.9\%   \\
+%	HPSS --- 10 Iter            & 4.1\%           & 4.1\%                  & 36.5\%   \\
+%	Non-Processed --- 100 Iter  & 4.2\%           & 3.9\%                  & 17.1\%   \\
+%	HPSS --- 100 Iter           & 5.1\%           & 4.6\%                  & 18.0\%   \\
+%	100 Songs --- 500 Iter      & 5.5\%           & 5.3\%                  & 20.1\%   \\
+%	HPSS 100 Songs --- 500 Iter & 6.2\%           & 6.4\%                  & 25.8\%   \\
 
 We also found that HPSS generally increases the prediction accuracy of our
-model when faced with unseen information. Though our overall accuracy was
-quite low, there was an average accuracy increase of 82\% by switching to
-chromas extracted from the HPSS processed audio. It would be interesting to
-explore how the preprocessing effects the accuracy of a more mature chord
-estimation system.
+model when faced with unseen information.
 
 With the semi-supervised learning using the EM algorithm, it is assumed that
 any chord may follow another, even if those state transitions never appeared in
