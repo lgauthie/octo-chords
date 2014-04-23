@@ -257,12 +257,21 @@ chromas become much cleaner.
 
 \subsection{Hidden Markov Models}
 
-Hidden Markov Models (HMMs) are a model for time-series data. Because chord
-sequences are continuous,  Hidden Markov Models have become a common method for
-for automatic chord estimation. In this model, the a given chord depends on the
-previous chord predicted while all the other chords are hidden. For each song
-in our data set, the set of chorma vectors are the observations, while the
-chord labels are our states.
+Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous,  Hidden Markov Models have become a common method for for automatic chord estimation. HMMs are a probabalistic
+model that adapts well to the continuous nature of chord sequences. In this model, the a given chord depends on the previous chord predicted while all the other chords are hidden. For each song in our data set, the set of chorma vectors are the observations, while the chord labels are our states.
+
+To create our model, we used the SciKit Learn framework; however, because the framework is designed for
+unsupervised learning, we needed to calculate the prior probability, covarience and mean of the chromas,
+which are represented as a 12-dimentional Gaussian distribution to construct our initial transition matrix.
+This transition matrix represents the probabiliy of one chord transitioning to another, independent of the
+previous chords.  This was based off of Dan Ellis' Matlab code avaiable thorugh LabROSA. Due to the large size of our dataset, using Matlab was inconvienient for processing time, so this was rewritten into Python to be fed
+into SciKit's methods.
+
+SciKit uses the Expectation Maximization (EM) algorithm to train the model on 586 songs. The number of iterations is specified by the user. For our purposes, we trained our non-processed and our processed data using 2, 10, and 100 iterations. We also ran a random subset of 100 songs from each data set though 500 iterations. 
+
+To test our model, 63 random songs were reserved for testing. SciKit uses the Viterbi algorithm find the
+chord progression that was most likely to have produced the given sequence of chroma vectors.
+
 
 \begin{figure}
    \centering
@@ -273,7 +282,9 @@ chord labels are our states.
 
 \subsection{Evaluation}
 
+\cite{Danellis:23} problems with viterbi...
 
+Hey look a dinosaur.
 What worked well? What didn't? Where did most of the errors occur?
 What was our success rate? Did the results improve with HPSS?
 
