@@ -38,24 +38,25 @@
 
 \section{Abstract}\label{sec:desoutline}
 This project aims to investigate and evaluate some of the current most popular
-strategies for automatic chord estimation. We present a simple HMM-based model 
-for detecting chords form audio signals using chroma vectors. We also evaluate the 
-effectiveness of Harmonic/Percussive Sound Separation (HPSS) as a preprossing step by comparing
-the results of an unaltered data set to the results of a dataset that has undergone
-HPSS preprocessing. Our results show ....EDIT ME.... We concluse by discussing future improvements
-to our model.
+strategies for automatic chord estimation. We present a simple HMM-based model
+for detecting chords from audio signals using chroma vectors. We also evaluate
+the effectiveness of Harmonic/Percussive Sound Separation (HPSS) as a
+preprocessing step by comparing the results of an unaltered data set to the
+results of a dataset that has undergone HPSS preprocessing. Our results showed
+that HPSS is a valuable preprocessing step before extracting Chromas. The
+cleaner chroma vectors resulted in improved results in our Hidden Markov Model.
 
 \section{Introduction}\label{sec:intro}
 
 Chords describe the harmonic content of a piece of music. Automatic estimation of chords
-has many applications in music information retreival and music annotation. For example,
+has many applications in music information retrieval and music annotation. For example,
 automatic chord estimation may be used to inference genre and emotional content 
-(minor, sad; major, happy) of a piece, or to identify songs of similar form. 
+(minor, sad; major, happy) of a piece, or to identify songs of similar form.
 They have also been used successfully in detecting cover-songs \cite{Papadopoulos:18}.
 
 Automatic chord detection has been a MIREX task since 2008, and has since seen increased
-improvement, with submissions in 2012 surpassing 72 percent accuracy on unseen data 
-\cite{McVicar:00}. Hidden Markov Models have been used successfully in a number of 
+improvement, with submissions in 2012 surpassing 72 percent accuracy on unseen data
+\cite{McVicar:00}. Hidden Markov Models have been used successfully in a number of
 automatic chord estimation models, including \cite{Ueda:01} \cite{Lee:15} \cite{Ueda:19}
 and \cite{Papadopoulos:18}.
 
