@@ -315,16 +315,23 @@ EDIT ME
 We have introduced a simple beat-synchronous automatic chord estimation model
 and evaluated the effectiveness of HPSS as a preprocessing step.
 
-Exploration of tuning, different hmm models (ex, better model for less frequent chords)
-
 One preprocessing step that we have not considered in this paper is tuning.
 Because tuning pitch may differ between recordings, it may be necessary to
-consider different candidate chroma vectors.  \cite{McVicar:00} suggests that
+consider different candidate chroma vectors. McVicar\cite{McVicar:00} suggests that
 tuning using Harte's tuning algorithm is a staple of most modern algorithms.
 Some older papers such as \cite{Zenz:20} mention micro--tuning of the human
 voice as well as percussive sounds as sources of classification error, so
-tuning algorithms may be worth investigating as a future preprocessing stepin
+tuning algorithms may be worth investigating as a future preprocessing step in
 addition to HPSS.
+
+The estimation model could also be improved by taking into account more
+information about the music context. For example, information about key could
+be used to choose a reasonable starting chord, or limit the choices of chords
+for the current song. Limiting the chord choices will run into problems if the
+song relies on out of key chords, or has a key change at any point. Information
+about the time signature of a song could be used to decide when chord changes
+occur. A simple way to add this in would be to penalize chords from changing on
+weak beats.
 
 Each song in the Billboard dataset also includes key information. It is
 possible to use the HMM model to simultaneously estimate the chords and the key
