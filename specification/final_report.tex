@@ -217,7 +217,19 @@ of chords between beats, and reduces the overall computational cost by reducing 
 number of windows. Because the Billboard data is annotation at beat times, this approach naturally
 lines up with our ground truth data.
 
-EDIT: INSERT PICTURE OF AN EXTRACTED CHROMA VECTOR
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{187.png}
+	\caption{Extracted Chroma Vector}
+	\label{fig:ChromaNorm}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{187h.png}
+	\caption{Extracted Chroma Vector after HPSS}
+	\label{fig:ChromaHPSS}
+\end{figure}
 
 - did we multiple by log? normalize? Talk about strategy we exentually went with.
 - \cite{Jiang:22} investigates different preprocessing steps. Discusses that
@@ -232,7 +244,7 @@ Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequ
 
 \begin{figure}
    \centering
-    \includegraphics[width=0.5\textwidth]{trans-h.png}
+   \includegraphics[width=0.5\textwidth]{trans-h.png}
    \caption{Initial Transition Matrix}
    \label{fig:transmath}
 \end{figure}
