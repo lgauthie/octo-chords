@@ -207,10 +207,8 @@ Our results also show similar gains after using the preprocessed audio.
 \subsection{Chromogram Computation}
 
 To compute the 12-dimensional chroma vectors (or Pitch Class Profiles), we used
-the Spectrum2Chroma Marsystem available in Marsyas, which is based on the
-MATLAB algorithm fft2chromamx.m written by Dan Ellis.  Each chroma vector
-represents the intensity the 12 pitch classes at each window of samples from
-the audio file.
+the Chroma method available in Marsyas, and restricted the frequencies between
+Octave 1 and 5 (~60-1000Hz).
 
 Because most chord transitions occur on beats, extrating chorma information for
 blocks corresponding to each beat has shown to be beneficial in creating an
@@ -220,6 +218,13 @@ extracting chroma vectors on beats improved the reults by six percent. In
 chords between beats, and reduces the overall computational cost by reducing
 the total number of windows. Because the Billboard data is annotation at beat
 times, this approach naturally lines up with our ground truth data.
+
+Two sets of chromagrams were calcualted for our dataset, one set without HPSS applied to
+the audio, and one set without. A comparison of the resulting chromagrams for part of the 
+song "EDIT EDIT EDIT EDIT" can be seen in figures \ref{fig:ChromaNorm} and \ref{fig:ChromaHPSS} 
+respectively. In these figures,
+the y-axis corresponds to the chord labels C(1), C#(2), D(3), etc. It's clear to see that
+after the HPSS processing, the chromas become much cleaner.
 
 \begin{figure}
 	\centering
@@ -234,13 +239,6 @@ times, this approach naturally lines up with our ground truth data.
 	\caption{Extracted Chroma Vector after HPSS}
 	\label{fig:ChromaHPSS}
 \end{figure}
-
-- did we multiple by log? normalize? Talk about strategy we exentually went with.
-- \cite{Jiang:22} investigates different preprocessing steps. Discusses that
-an HMM model does it's own kind of temporal smoothing in the classification
-stage, and that applying an additional smoothing process doesn't increase results much.
-The authors are mention doing logarithmic compression on the audio data before
-calculating the chroma to account for the logarithmic sensation of sound intensity.
 
 \subsection{Hidden Markov Models}
 
