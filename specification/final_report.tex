@@ -58,33 +58,35 @@ Automatic chord detection has been a MIREX task since 2008, and has since seen i
 improvement, with submissions in 2012 surpassing 72 percent accuracy on unseen data
 \cite{McVicar:00}. Hidden Markov Models have been used as a successful modeling stategy
  in a number of automatic chord estimation models, including \cite{Ueda:01} \cite{Lee:15} \cite{Ueda:19}
-and \cite{Papadopoulos:18}. All of these models use chromagrams (Pitch Class Profiles)
+and \cite{Papadopoulos:18}. All of these models use chroma vectors (Pitch Class Profiles)
 at the feature extraction phase, which represent the pitch content for a song for each sampled
-window.  \cite{McVicar:00},  \cite{Lee:15}, \cite{Papadopoulos:18}, and\cite{Zenz:20} have all found
-that chroma extraction on beats improves results, as chords more frequently change on beats.
+window. Each chroma vector is a real valued vector which contains the salience of each of the 
+pitch classes (C, C\#.... B) for a given time window. \cite{McVicar:00},  \cite{Lee:15}, \cite{Papadopoulos:18}, and\cite{Zenz:20} have all found that chroma extraction on beats improves results, as chords more frequently change on beats.
 
 Another method to improve the resolution of chromagrams is filtering out transient and precussive
 information that does not contribute to the harmonic content, but may add noise to the extracted
 chromagram. A simple technique for this, is to filter the frequencies where chromas are extracted
 so that they are restructed to the range with the most pitch content. Another is to supress harmonic
-and percussive sounds using harmonic/percussive sound seperation (HPSS). 
-
-
-...EDIT: Write more about previous papers that used HPSS.
-
+and percussive sounds using harmonic/percussive sound seperation (HPSS).  It has been noted that 
+applying this pre processing step can greatly improve chord estimation accuracy \cite{Reed:09}. 
+In a spectrogram the harmonic components of a musical signal have  a stable pitch and form parallel ridges along the time axis. Transient sounds distribute  their frequency content across the entire spectrum and occur during short time frames, which can be seen as spikes in the frequency axis. The end product of HPSS is two signals, 
+one with mostly harmonic content, the other with percussive sounds which is obtained by 
+complementary diffusion on the spectrogram.
 
 \section{Overview}\label{sec:approch}
 
-For this project we will use the annotated Billboard 100 data set. This data
+For this project used part of the annotated Billboard 100 data set. Our data
 set includes audio files for approximately 650 audio files from the Billboard
 top 100 chart between the years 1958 and 1991. Each song also includes beat by
 beat chord annotation \cite{Burgoyne:07}. The chords are labeled as either maj,
-min, aug, dim, sus2, sus4, X, or N, where X and N imply no chord is present or
-detected. A distinction is made between enharmonic labels (for example both
-G\# and Ab occur in the annotations), for a total of 128 states. 
-For the scope of this project we will not try to classify inverted
-chords and 7th chords independently, and instead will classify them as one of
-the previously mentioned classes.
+min, aug, dim, sus2, sus4, or N, where N imply no chord is present. A distinction 
+is made between enharmonic labels (for example both G\# and Ab occur in the 
+annotations), for a total of 128 chord labels. 
+
+For our the scope of our project we reduced this number by combining the 
+enharmonic labels and reassigning the chord labels into two classes: major and
+minor, as seen in Figure \ref{fig:chordlabs}. Combined with the no chord label, 
+we considered 25 distinct chord labels.
 
 \begin{figure}
 \begin{center}
@@ -102,31 +104,18 @@ the previously mentioned classes.
 \end{center}
 \end{figure}
 
-We use two sets of audio data, one unprocessed, and one preprocessed by
-performing harmonic percussive source separation (HPSS). It has been noted that 
-applying this pre processing step can greatly improve chord estimation accuracy \cite{Reed:09}. 
-In a spectrogram the harmonic components of a musical signal have 
-a stable pitch and form parallel ridges along the time axis. Transient sounds distribute 
-their frequency content across the entire spectrum and occur during short time frames, 
-which can be seen as spikes in the frequency axis. The end product of HPSS is two signals, 
-one with mostly harmonic content, the other with percussive sounds which is obtained by 
-complementary diffusion on the spectrogram.
-
-Each audio file is mixed to mono to reduce processing time. Then Chorma vector extraction is 
+We used two sets of audio data, one unprocessed, and one preprocessed by
+performing harmonic percussive source separation (HPSS). Each audio file was mixed
+to mono to reduce processing time. Then chormagram extraction was
 performed on the two auto datasets at intervals corresponding to the beat information in the 
-annotated data. Each chroma vector is a real valued vector which contains the salience of each 
-of the pitch classes (C, C\#.... B) for a given time window.
+annotated data, and only considered information from octaves 1 through 5 (approximately 60-1000Hz).
 
-After extracting the chroma vectors for each song in the data set, 63 of the tracks are randomly
-chosen using the random function in python and kept as testing data. The rest of the data set
-is used to train our HMM model. Hidden Markov Models (HMMs) are currently the most common method for 
-predicting chord labels, and also produce high accuracy scores. Previous use of
-preprocessing of input data has also been explored and is summarized in \cite{McVicar:00}.
+After extracting the chromagram for each song in the data set, 63 of the tracks were randomly
+chosen using the random function in Python and kept as testing data. The rest of the data set
+was used to train our HMM model. Because SciKit Learn only provides an unsupervised HMM, we calculated the initial transition matrix, prior probability, mean and convariance of the 
+vectors to feed into SciKit learn as initial values.
 
-To create a supervised model, the transition matrix, prior, and mean and convariance of the 
-vectors is created and run through functions available through
-SciKit Learn for convenient training and testing. A full overview of our
-proposed model can be seen in Figure \ref{fig:overview}.
+A full overview of our proposed model can be seen in Figure \ref{fig:overview}.
 
 % Define block style
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
