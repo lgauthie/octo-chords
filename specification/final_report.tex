@@ -164,15 +164,12 @@ A full overview of our proposed model can be seen in Figure \ref{fig:overview}.
 
 \subsection{PreProcessing}
 
-Harmonic percussive source separation was completed using the Librosa package
-created by Brian McFee. It was written in Python, uses custom short time
-fourier transforms and Scikit to perform two dimensional median filtering. The
-median filters work by replacing a given sample in a signal by the median of
-the signal values in the windows around the sample \cite{FitzGerald:11} while
-in the frequency domain. x(n) represents the input signal and y(n) is the
-output. l gives the number of samples over which the filter takes place. In our
-implementation a size of 23 provided the best result given the broad range of
-audio styles in the Billboard dataset.
+Harmonic percussive source separation was completed using the Python Librosa
+package \cite{librosa:24}. A median filter works by replacing a each fr
+in a signal by the median of the signal values in the FFT bins around the
+sample \cite{FitzGerald:11}.  $l$ gives the number of samples over which the
+filter takes place. In our implementation a size of 23 provided the best result
+given the broad range of audio styles in the Billboard dataset.
 
 $$y(n) = median \left \{x(n-k:n+k),l = (l-2)/2  \right \}$$
 
@@ -257,20 +254,33 @@ chromas become much cleaner.
 
 \subsection{Hidden Markov Models}
 
-Hidden Markov Models (HMMs) are a model for time-series data. Because chord sequences are continuous,  Hidden Markov Models have become a common method for for automatic chord estimation. HMMs are a probabalistic
-model that adapts well to the continuous nature of chord sequences. In this model, the a given chord depends on the previous chord predicted while all the other chords are hidden. For each song in our data set, the set of chorma vectors are the observations, while the chord labels are our states.
+Hidden Markov Models (HMMs) are a model for time-series data. Because chord
+sequences are continuous,  Hidden Markov Models have become a common method for
+for automatic chord estimation. HMMs are a probabalistic model that adapts well
+to the continuous nature of chord sequences. In this model, the a given chord
+depends on the previous chord predicted while all the other chords are hidden.
+For each song in our data set, the set of chorma vectors are the observations,
+while the chord labels are our states.
 
-To create our model, we used the SciKit Learn framework; however, because the framework is designed for
-unsupervised learning, we needed to calculate the prior probability, covarience and mean of the chromas,
-which are represented as a 12-dimentional Gaussian distribution to construct our initial transition matrix.
-This transition matrix represents the probabiliy of one chord transitioning to another, independent of the
-previous chords.  This was based off of Dan Ellis' Matlab code avaiable thorugh LabROSA. Due to the large size of our dataset, using Matlab was inconvienient for processing time, so this was rewritten into Python to be fed
-into SciKit's methods.
+To create our model, we used the SciKit Learn framework; however, because the
+framework is designed for unsupervised learning, we needed to calculate the
+prior probability, covarience and mean of the chromas, which are represented as
+a 12-dimentional Gaussian distribution to construct our initial transition
+matrix.  This transition matrix represents the probabiliy of one chord
+transitioning to another, independent of the previous chords.  This was based
+off of Dan Ellis' Matlab code avaiable thorugh LabROSA. Due to the large size
+of our dataset, using Matlab was inconvienient for processing time, so this was
+rewritten into Python to be fed into SciKit's methods.
 
-SciKit uses the Expectation Maximization (EM) algorithm to train the model on 586 songs. The number of iterations is specified by the user. For our purposes, we trained our non-processed and our processed data using 2, 10, and 100 iterations. We also ran a random subset of 100 songs from each data set though 500 iterations. 
+SciKit uses the Expectation Maximization (EM) algorithm to train the model on
+586 songs. The number of iterations is specified by the user. For our purposes,
+we trained our non-processed and our processed data using 2, 10, and 100
+iterations. We also ran a random subset of 100 songs from each data set though
+500 iterations.
 
-To test our model, 63 random songs were reserved for testing. SciKit uses the Viterbi algorithm find the
-chord progression that was most likely to have produced the given sequence of chroma vectors.
+To test our model, 63 random songs were reserved for testing. SciKit uses the
+Viterbi algorithm find the chord progression that was most likely to have
+produced the given sequence of chroma vectors.
 
 
 \begin{figure}
@@ -458,7 +468,7 @@ Alexander Sheh and Daniel P.W. Ellis
 {\it International Symposium on Music Information Retrieval},
 October 2003.
 
-\bibitem{librosa:23}
+\bibitem{librosa:24}
 Dawen Liang, Brian McFee, Matt McVicar, and Colin Raffel
 "Librosa, a Python Package for Music and Audio Processing"
 {\it GitHub Repository, https://github.com/bmcfee/librosa},
