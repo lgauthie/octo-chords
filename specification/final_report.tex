@@ -192,9 +192,9 @@ be a useful pre-processing step for beat extraction in future work.
 	\resizebox{\textwidth}{!}{%
 	\begin{tabular}{l c c c}
 	\toprule
-                               & 64 Test Set Avg & All Songs Test Set Avg & All Songs Test Set Max  \\ \midrule
-	Non-Processed              & 1.0\%           & 1.0\%                  & 20.7\%   \\
-	HPSS                       & 1.5\%           & 1.0\%                  & 19.9\%   \\
+                                & 64 Test Set Avg & All Songs Test Set Avg & All Songs Test Set Max  \\ \midrule
+	Non-Processed               & 1.0\%           & 1.0\%                  & 20.7\%   \\
+	HPSS                        & 1.5\%           & 1.0\%                  & 19.9\%   \\
 	Non-Processed --- 2 Iter    & 3.2\%           & 2.9\%                  & 44.7\%   \\
 	HPSS --- 2 Iter             & 3.7\%           & 3.4\%                  & 60.5\%   \\
 	Non-Processed --- 10 Iter   & 3.5\%           & 3.2\%                  & 38.9\%   \\
@@ -288,15 +288,29 @@ set and reserved for testing while the rest were used to training.
 \subsection{Evaluation}
 
 Despite creating the initial values to train the data with supervised learning,
-we were unable to optimize the Viterbi algorithm to find the optimal path
-through the states. Because it uses recognition, and not a forced alignment
-technique, the algorithm assumes any chord may follow another, even if those
-state transitions never appeared in the training data.~\cite{Danellis:23}
-discusses the impact of this optimization on an EM-Trained HMM chord model.
-Without the forced alignment, results using chromagrams were as low as 10
-percent on a small set of Beatles song data. When forced alignment was used,
-and the algorithm only assumed progressions in the test data were valid,
-results on the same test set increased by over 16 percent.
+the Viterbi algorithm to predict the correct chords in most cases. Partly this
+is caused by simply starting with the wrong chord. And example of this is a
+song in they key of Ab major, but the first predicted chord is Bb major. It is
+likely that the model with keep predicting chords relative to Bb major, and
+therefore will miss-classify all of the chords for that particular song.
+Overall this lead to inconsistent results where most songs had very low
+accuracy 0--5\%, but some songs had 20--30\% accuracy.
+
+We also found that HPSS generally increases the prediction accuracy of our
+model when faced with unseen information. Though our overall accuracy was
+quite low, there was an average accuracy increase of 82\% by switching to
+chromas extracted from the HPSS processed audio. It would be interesting to
+explore how the preprocessing effects the accuracy of a more mature chord
+estimation system.
+
+With the semi-supervised learning using the EM algorithm, it is assumed that
+any chord may follow another, even if those state transitions never appeared in
+the training data.~\cite{Danellis:23} discusses the impact of this optimization
+on an EM-Trained HMM chord model.  Without the forced alignment, results using
+chromagrams were as low as 10 percent on a small set of Beatles song data. When
+forced alignment was used, and the algorithm only assumed progressions in the
+test data were valid, results on the same test set increased by over 16
+percent.
 
 % TODO: EDIT ME
 
@@ -307,7 +321,7 @@ and evaluated the effectiveness of HPSS as a preprocessing step.
 
 One preprocessing step that we have not considered in this paper is tuning.
 Because tuning pitch may differ between recordings, it may be necessary to
-consider different candidate chroma vectors. McVicar\cite{McVicar:00} suggests that
+consider different candidate chroma vectors.~\cite{McVicar:00} suggests that
 tuning using Harte's tuning algorithm is a staple of most modern algorithms.
 Some older papers such as~\cite{Zenz:20} mention micro-tuning of the human
 voice as well as percussive sounds as sources of classification error, so
