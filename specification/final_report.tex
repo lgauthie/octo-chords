@@ -161,28 +161,25 @@ A full overview of our proposed model can be seen in Figure~\ref{fig:overview}.
 In a spectrogram the harmonic components of a musical signal have a stable
 pitch and form parallel ridges along the time axis. Transient sounds distribute
 their frequency content across the entire spectrum and occur during short time
-frames, which can be seen as spikes in the frequency axis. The end product of
-HPSS is two signals, one with mostly harmonic content, the other with
-percussive sounds which is obtained by complementary diffusion on the
-spectrogram.
+frames, which can be seen as spikes in the frequency axis.  HPSS produces two
+signals, one with mostly harmonic content, the other with percussive sounds
+which is obtained by complementary diffusion on the spectrogram.
 
-HPSS was completed using Python code provided by~\cite{librosa:24}. To separate
-the frequency content produced by percussive elements from the harmonic
-elements, median filtering is applied.  It works by replacing each frequency
-bin with the median of the values in the surrounding bins~\cite{FitzGerald:11}.
-In our implementation an $l$ size of 23 provided the best result given the
-broad range of audio styles in the Billboard dataset. When $l$ was larger than
-40, the attack of harmonic components became too slow, which is valuable
-information during chroma extraction.
+HPSS was completed using Python code provided by~\cite{librosa:24}. The audio
+is first transformed into the frequency domain. For each frequency the current
+FFT window is replaced with the median of the $l$ frequency bins surround
+it~\cite{FitzGerald:11}. In our implementation, a kernel size of 23 gave the
+best results given the broad range of audio styles present in the Billboard
+dataset. When $l$ was larger than 40, the attack of harmonic components became
+too slow, which is valuable information during chroma extraction.
 
-$$ y(n) = median \left \{x(n-k:n+k),l = (l-2)/2  \right \} $$
+$$ Y(n) = median \left \{X(n-k:n+k),l = (l-2)/2  \right \} $$
 
-The percussive suppressed spectrogram (the harmonic information) is then used
-to create a mask which is applied to the original spectrogram. A soft mask
-based on Wiener Filtering is used with a p-value of 2. From here the inverse
-short time fourier transform is used to obtain the harmonic audio. Our system
-only makes use of the harmonics, however, the  separated percussive audio could
-be a useful pre-processing step for beat extraction in future work.
+The percussive suppressed spectrogram is used to create a soft mask based on
+Wiener filtering, which is then applied to the original spectrogram. Afterwards
+the ISFT is used to obtain the harmonic audio. Our system only makes use of the
+harmonics; however, the  separated percussive audio could be a useful
+pre-processing step for beat extraction in future work.
 
 \begin{figure}
    \centering
