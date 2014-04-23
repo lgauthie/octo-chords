@@ -40,20 +40,20 @@
 This project aims to investigate and evaluate some of the current strategies
 for automatic chord estimation. We present a simple HMM-based mode that uses
 the SciKit Learn framework for detecting chords from audio signals using beat
-synchronous chroma vectors.  SciKit learn is an open source toolkit available
-in Python for machine learning. We also evaluate the effectiveness of
-Harmonic/Percussive Sound Separation (HPSS) as a preprocessing step by
+synchronous chroma vectors.  SciKit learn is an open source toolkit in Python 
+for machine learning. We evaluate the effectiveness of Harmonic/Percussive 
+Sound Separation (HPSS) as a preprocessing step by
 comparing the results of an unaltered data set to the results of a dataset that
-has undergone HPSS preprocessing, and fine that HPSS is a valuable
-preprocessing step before extracting chroma vectors
+has undergone HPSS preprocessing, and find that HPSS is a valuable
+preprocessing step prior to extracting chroma vectors.
 
 \section{Introduction}\label{sec:intro}
 
 Chords describe the harmonic content of a piece of music. Automatic estimation
 of chords has many applications in music information retrieval and music
-annotation. For example, automatic chord estimation may be used to inference
+annotation. For example, automatic chord estimation may be used to infer
 genre and emotional content (minor, sad; major, happy) of a piece, or to
-identify songs of similar form.  It has also been used successfully in
+identify songs of similar compositional form.  It has also been used successfully in
 detecting cover-songs~\cite{Papadopoulos:18}.
 
 Automatic chord detection has been a MIREX task since 2008, and has since seen
@@ -63,35 +63,35 @@ successful modeling strategy in a number of automatic chord estimation models,
 including~\cite{Ueda:01}~\cite{Lee:15}~\cite{Ueda:19} and
 \cite{Papadopoulos:18}. All of these models use chroma vectors (Pitch Class
 Profiles) at the feature extraction phase, which represent the pitch content
-for a song for each sampled window. Each chroma vector is a real valued vector
+of a song for each sampled window. Each chroma vector is a real valued vector
 which contains the salience of each of the pitch classes (A, A\# \dots G, G\#) for a
 given time window.~\cite{McVicar:00},~\cite{Lee:15},~\cite{Papadopoulos:18},
 and\cite{Zenz:20} have all found that chroma extraction on beats improves
-results, as chords more frequently change on beats.
+results, as chords are most stable between beats.
 
 Another method to improve the resolution of chromagrams is filtering out
 transient and percussive information that does not contribute to the harmonic
 content, but may add noise to the extracted chromagram. A simple technique for
-this, is to filter the frequencies where chromas are extracted so that they are
+this is to filter the frequencies where chromas are extracted so that they are
 restricted to the range with the most pitch content. Another is to suppress
 harmonic and percussive sounds using harmonic/percussive sound separation
-(HPSS).  It has been noted that applying this pre processing step can greatly
-improve chord estimation accuracy~\cite{Reed:09}.
+(HPSS).  It has been noted that applying this preprocessing step can greatly
+improve chord estimation accuracy ~\cite{Reed:09}.
 
 \section{Overview}\label{sec:approch}
 
-For this project used part of the annotated Billboard 100 data set. Our data
-set includes audio files for approximately 650 audio files from the Billboard
-top 100 chart between the years 1958 and 1991. Each song also includes beat by
+For this project we used part of the annotated Billboard 100 data set. Our data
+set included audio files for approximately 650 audio files from the Billboard
+top 100 chart between the years 1958 and 1991. Each song in the data set includes beat by
 beat chord annotation~\cite{Burgoyne:07}. The chords are labeled as either maj,
 min, aug, dim, sus2, sus4, or N, where N imply no chord is present. A
 distinction is made between enharmonic labels (for example both G\# and Ab
 occur in the annotations), for a total of 128 chord labels.
 
-For our the scope of our project we reduced this number by combining the
-enharmonic labels and reassigning the chord labels into two classes: major and
+For our the scope of our project we reduced this number by combining enharmonic 
+labels and reassigning the chord labels into two classes, major and
 minor, as seen in Figure~\ref{fig:chordlabs}. Combined with the no chord label,
-we considered 25 distinct chord labels.
+we considered 25 distinct chord labels to train and test our model.
 
 \begin{figure}
 \begin{center}
@@ -109,19 +109,16 @@ we considered 25 distinct chord labels.
 \end{center}
 \end{figure}
 
-We used two sets of audio data, one unprocessed, and one preprocessed by
+We used two sets of audio data: one unprocessed, and one preprocessed by
 performing harmonic percussive source separation (HPSS). Each audio file was
-mixed to mono to reduce processing time. Then chormagram extraction was
-performed on the two auto datasets at intervals corresponding to the beat
+mixed to mono to reduce processing time. Then, chormagram extraction was
+performed on the two audio datasets at intervals corresponding to the beat
 information in the annotated data, and only considered information from octaves
 1 through 5 (approximately 60--1000Hz).
 
 After extracting the chromagram for each song in the data set, 63 of the tracks
 were randomly chosen using the random function in Python and kept as testing
-data. The rest of the data set was used to train our HMM model. Because SciKit
-Learn only provides an unsupervised HMM, we calculated the initial transition
-matrix, prior probability, mean and covariance of the vectors to feed into
-SciKit learn as initial values.
+data. The rest of the data was used to train our HMM model.
 
 A full overview of our proposed model can be seen in Figure~\ref{fig:overview}.
 
@@ -158,7 +155,7 @@ A full overview of our proposed model can be seen in Figure~\ref{fig:overview}.
 
 \subsection{PreProcessing}
 
-In a spectrogram the harmonic components of a musical signal have a stable
+In a spectrogram, the harmonic components of a musical signal have a stable
 pitch and form parallel ridges along the time axis. Transient sounds distribute
 their frequency content across the entire spectrum and occur during short time
 frames, which can be seen as spikes in the frequency axis. The end product of
@@ -237,15 +234,14 @@ the Chroma method available in Marsyas, and restricted the frequencies between
 Octave 1 and 5 (\~60--1000Hz).
 
 Because most chord transitions occur on beats, extracting chorma information for
-blocks corresponding to each beat has shown to be beneficial in creating an
+windows corresponding to each beat has shown to be beneficial to creating an
 more accurate automatic chord estimation model. For example, in~\cite{Zenz:20},
-extracting chroma vectors on beats improved the results by six percent. In
-\cite{McVicor:00}, it is mentioned that this method exploits the stability of
-chords between beats, and reduces the overall computational cost by reducing
-the total number of windows. Because the Billboard data is annotation at beat
-times, this approach naturally lines up with our ground truth data.
+extracting chroma vectors on beats improved the results by 6 percent. This method 
+exploits the stability of chords between beats, and reduces the overall computational 
+cost by reducing the total number of windows \cite{McVicor:00}. Because the Billboard 
+data is annotation at beat times, this approach naturally lines up with our ground truth data.
 
-Two sets of chromagrams were calculated for our dataset, one set without HPSS
+Two sets of chromagrams were calculated for our dataset, one set with HPSS
 applied to the audio, and one set without. A comparison of the resulting
 chromagrams for part of the song `Help Is On The Way' by the Little River Band
 can be seen in figures~\ref{fig:ChromaNorm} and~\ref{fig:ChromaHPSS}
@@ -255,39 +251,33 @@ chromas become much cleaner.
 
 \subsection{Hidden Markov Models}
 
-Hidden Markov Models (HMMs) are a model for time-series data. Because chord
+Hidden Markov Models (HMMs) are a probabalistic model for time-series data. Because chord
 sequences are continuous,  Hidden Markov Models have become a common method for
-for automatic chord estimation. HMMs are a probabilistic model that adapts well
-to the continuous nature of chord sequences. In this model, the given chord
-depends on the previous chord predicted while all the other chords are hidden.
-For each song in our data set, the set of chorma vectors are the observations,
+for automatic chord estimation and adapts well to the continuous nature of chord sequences. 
+In this model, a given chord depends only on the previous chord predicted while all the other chords 
+are hidden. For each song in our data set, the set of chorma vectors are the observations,
 while the chord labels are our states.
 
 To create our model, we used the SciKit Learn framework; however, because the
 framework is designed for unsupervised learning, we needed to calculate the
-prior probability, covariance and mean of the chromas, which are represented as
-a 12-dimensional Gaussian distribution to construct our initial transition
+prior probability, covariance and mean of the chromas  (which are represented as
+a 12-dimensional Gaussian distribution) to construct our initial transition
 matrix.  This transition matrix represents the probability of one chord
 transitioning to another, independent of the previous chords.  This was based
 off of Dan Ellis' Matlab code available through LabROSA\@. Due to the large size
 of our dataset, using Matlab was infeasible for processing time, so this was
 rewritten into Python to be fed into SciKit's GaussianHMM model.
 
-SciKit uses the Expectation Maximization (EM) algorithm to train the model on
-586 songs. The number of iterations is specified by the user. Because the
-GaussianHMM model in SciKit is not supervised, we first tried to build a
-supervised model by calculating the means, covariance, and transition matrices.
-Those values were then used with the GaussianHMM model to do estimation.  For
-comparison, we also trained our non-processed and our processed data using 2,
-10, and 100 iterations of the unsupervised EM algorithm. In all cases the
-transition matrix was calculated a head of time, and not modified by the EM
-algorithm.  We also ran a random subset of 100 songs from each data set though
-500 iterations.
+SciKit uses the Expectation Maximization (EM) algorithm to train the model and the 
+Viterbi algorithm to predict the most likely chord progression given a sequence
+of chroma vectors. The number of iterations for the EM algorithm is specified by the user. For
+comparison, we also trained our unprocessed and our processed data using 2,
+10, and 100 iterations of the unsupervised EM algorithm. We also ran a random 
+subset of 100 songs from each data set though 500 iterations.
 
-To test our model, 63 random songs were reserved for testing. We also tested
-the across the entire dataset. SciKit uses the Viterbi algorithm find the chord
-progression that was most likely to have produced the given sequence of chroma
-vectors.
+To test our model, we used two training and testing sets. First, the model was trained
+and tested with all of the data. Secondly, 63 random songs were removed from the data
+set and reserved for testing while the rest were used to training. 
 
 \begin{figure}
    \centering
