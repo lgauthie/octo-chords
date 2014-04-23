@@ -150,16 +150,25 @@ proposed model can be seen in Figure \ref{fig:overview}.
 \section{Model}
 
 \subsection{PreProcessing}
-Harmonic percussive source separation was completed using the Librosa package created by Brian McFee.
-The package is written in Python and uses scikit to perform two dimensional median filtering. The
-STFT and ISTFT are both custom implementations. The median filters operates by replacing a given sample
-in a signal by the median of the signal values in a window around the sample \cite{FitzGerald:11}. The input
-audio is mixed to mono and the original 44.1 kHz sampling rate is used. 
+
+Harmonic percussive source separation was completed using the Librosa package
+created by Brian McFee. It was written in Python, uses custom short time
+fourier transforms and Scikit to perform two dimensional median filtering. The
+median filters work by replacing a given sample in a signal by the median of
+the signal values in the windows around the sample \cite{FitzGerald:11} while
+in the frequency domain. x(n) represents the input signal and y(n) is the
+output. l gives the number of samples over which the filter takes place. In our
+implementation a size of 23 provided the best result given the broad range of
+audio styles in the Billboard dataset.
 
 $$y(n) = median \left \{x(n-k:n+k),l = (l-2)/2  \right \}$$
 
-Each spectrogram is then translated back to the time domain where it can then be run through the
-feature extraction system.
+The percussive suppressed spectrogram (the harmonic information) is then used
+to create a mask which is applied to the original spectrogram. A soft mask
+based on Wiener Filtering is used with a p-value of 2. From here the inverse
+short time fourier transform is used to obtain the harmonic audio. Our system
+only makes use of the harmonics, however, the  separated percussive audio could
+be a useful pre-processing step for beat extraction in future work.
 
 \begin{figure}
    \centering
@@ -191,31 +200,27 @@ feature extraction system.
 \label{fig:resulttable}
 \end{figure*}
 
-Ueda \cite{Ueda:19} discusses a model very similar to our goals. Using the Beatles 
-annotated data set, a 74.24 percent chord recognition rate was achieved without HPSS, and 
-a 78.48 percent chord recognition rate was achieved with it. This is not a trivial increase in
-success, and suggests we should should see higher rates of accuracy when the
-HPSS algorithm is applied to the incoming audio.
-
-- How were the HPSS's implemented?
-- more deets on how these work
-- picture of previous spectrum, and then the hpss spectrum maybe? T'be radskis.
+Ueda \cite{Ueda:19} discusses a model very similar to our goals. Using the
+Beatles annotated data set, a 74.24 percent chord recognition rate was achieved
+without HPSS, and a 78.48 percent chord recognition rate was achieved with it.
+Our results also show similar gains after using the preprocessed audio.
 
 \subsection{Chromogram Computation}
 
-To compute the 12-dimensional chroma vectors (or Pitch Class Profiles), we used the 
-Spectrum2Chroma Marsystem available in Marsyas, which is based on the MATLAB algorithm 
-fft2chromamx.m written by Dan Ellis.
-Each chroma vector represents the intensity the 12 pitch classes at each window of 
-samples from the audio file. 
+To compute the 12-dimensional chroma vectors (or Pitch Class Profiles), we used
+the Spectrum2Chroma Marsystem available in Marsyas, which is based on the
+MATLAB algorithm fft2chromamx.m written by Dan Ellis.  Each chroma vector
+represents the intensity the 12 pitch classes at each window of samples from
+the audio file.
 
-Because most chord transitions occur on beats, extrating chorma information for blocks corresponding
-to each beat has shown to be beneficial in creating an more accurate automatic chord
-estimation model. For example, in \cite{Zenz:20}, extracting chroma vectors on beats improved
-the reults by six percent. In \cite{McVicor:00}, it is mentioned that this method exploits the stability
-of chords between beats, and reduces the overall computational cost by reducing the total
-number of windows. Because the Billboard data is annotation at beat times, this approach naturally
-lines up with our ground truth data.
+Because most chord transitions occur on beats, extrating chorma information for
+blocks corresponding to each beat has shown to be beneficial in creating an
+more accurate automatic chord estimation model. For example, in \cite{Zenz:20},
+extracting chroma vectors on beats improved the reults by six percent. In
+\cite{McVicor:00}, it is mentioned that this method exploits the stability of
+chords between beats, and reduces the overall computational cost by reducing
+the total number of windows. Because the Billboard data is annotation at beat
+times, this approach naturally lines up with our ground truth data.
 
 \begin{figure}
 	\centering
