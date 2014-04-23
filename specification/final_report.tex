@@ -331,7 +331,8 @@ for the current song. Limiting the chord choices will run into problems if the
 song relies on out of key chords, or has a key change at any point. Information
 about the time signature of a song could be used to decide when chord changes
 occur. A simple way to add this in would be to penalize chords from changing on
-weak beats.
+weak beats. In both cases this extra information could be encoded in a Markov
+Logic Network as suggested in~\cite{Papadopoulus:04}.
 
 Each song in the Billboard dataset also includes key information. It is
 possible to use the HMM model to simultaneously estimate the chords and the key
