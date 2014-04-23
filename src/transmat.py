@@ -1,6 +1,7 @@
 import sys
 import cPickle as pickle
 import itertools
+import timeit
 
 import numpy as np
 import numpy.matlib as ml
@@ -21,18 +22,29 @@ def main():
     hmm = GaussianHMM(
         transitions.shape[0],
         "full",
-        startprob=priors,
+        #startprob=priors,
+        n_iter=500,
         transmat=transitions,
+        init_params='mcs',
+        params='mcs',
     )
     feats, _ = load_feats_labels(file_list)
-    hmm.means_ = np.transpose(models['mean'])
-    hmm.covars_ = models['sigma']
+    feat, lab = load_feats_labels(file_list)
+    #hmm.means_ = np.transpose(models['mean'])
+    #hmm.covars_ = models['sigma']
+    print 'Fitting'
+
+    start = timeit.default_timer()
+    hmm.fit([np.transpose(feat)])
+    stop = timeit.default_timer()
+    print 'Training Time: ' + str(stop - start)
+
     features, labels = load_feats_labels(['audio.arff'])
     _, seq = hmm.decode(np.transpose(features))
     #print filter(lambda(x,y): x==y, zip(labels, map(int2label, seq)))
     print len(filter(lambda(x,y): x==y, zip(labels, map(int2label, seq))))
     pickle.dump(hmm, open(outname, "wb"))
-    plt.imshow(transitions)
+    plt.imshow(transitions, interpolation='nearest')
     plt.show()
 
 def calc_transmat(file_list):
@@ -72,7 +84,7 @@ def calc_transmat(file_list):
         for (j, jkey) in enumerate(states):
             # Add one so there is no zero probabilities
             transitions[i,j] = 0.01 + sum([1 for (f, s) in trans
-                                        if f == ikey and s == jkey])
+                                           if f == ikey and s == jkey])
     priors = np.sum(transitions, 1)
     transitions = np.divide(
         transitions,
@@ -81,26 +93,52 @@ def calc_transmat(file_list):
     priors = priors/np.sum(priors)
     return (models, transitions, priors)
 
-def get_labels():
+def _get_labels():
     """ Generate All possible chord labels """
     notes = [
         'A',  'B',  'C',  'D',  'E',  'F',  'G',
-        'A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G#',
-        'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'Fb', 'Gb',
+        'Ab', 'Bb', 'Db', 'Eb', 'Gb',
+        #'A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G#',
+        #'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'Fb', 'Gb',
     ]
     quals = ['maj', 'min']#, 'aug', 'dim', 'sus2', 'sus4']
     labels = [note + ':' + qual for note in notes for qual in quals]
     labels.extend(['N'])
     return labels
 
-_labels = get_labels()
+_labels = _get_labels()
+
 def int2label(i):
     return _labels[i]
 
+def get_labels():
+    return _labels
+
 def label_filt(label):
     sp = label.split(':')
-    if sp[0] in ['N', 'X']:
+    if sp[0] == 'N':
         return 'N'
+    if sp[0] == 'X':
+        print "THIS SHOULDN HAHHAPAP"
+        return 'N'
+    if len(sp[0]) == 2:
+        val = sp[0]
+        if val == 'B#':
+            sp[0] = 'C'
+        elif val == 'A#':
+            sp[0] = 'Bb'
+        elif val == 'C#':
+            sp[0] = 'Db'
+        elif val == 'D#':
+            sp[0] = 'Eb'
+        elif val == 'E#':
+            sp[0] = 'F'
+        elif val == 'G#':
+            sp[0] = 'Ab'
+        elif val == 'Cb':
+            sp[0] = 'B'
+        elif val == 'Fb':
+            sp[0] = 'E'
     if sp[1] in ['dim']:
         return sp[0] + ':min'
     elif sp[1] in ['aug', 'sus2', 'sus4']:
@@ -115,7 +153,9 @@ def load_feats_labels(file_list):
     for path in file_list:
         with open(path, 'r') as f:
             contents = np.array(
-                [l[0:-1].split(',') for l in f if not l[0] in ['%', '@', '\n'] and l[-1] != 'X']
+              filter(lambda x: x[-1] != 'X',
+                [l[0:-1].split(',') for l in f if not l[0] in ['%', '@', '\n']]
+              )
             )
             labels.append([label_filt(label) for label in contents[:,-1]])
             features.append([map(float, feat) for feat in contents[:,0:-1]])
