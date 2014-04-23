@@ -37,14 +37,14 @@
 
 
 \section{Abstract}\label{sec:desoutline}
-This project aims to investigate and evaluate some of the current most popular
-strategies for automatic chord estimation. We present a simple HMM-based model
-for detecting chords from audio signals using chroma vectors. We also evaluate
-the effectiveness of Harmonic/Percussive Sound Separation (HPSS) as a
-preprocessing step by comparing the results of an unaltered data set to the
-results of a dataset that has undergone HPSS preprocessing. Our results showed
-that HPSS is a valuable preprocessing step before extracting Chromas. The
-cleaner chroma vectors resulted in improved results in our Hidden Markov Model.
+This project aims to investigate and evaluate some of the current strategies
+for automatic chord estimation. We present a simple HMM-based mode that uses
+the SciKit Learn and Marsyas frameworks for detecting chords from audio signals 
+using beat synchronous chroma vectors. We also evaluate the effectiveness of 
+Harmonic/Percussive Sound Separation (HPSS) as a preprocessing step by comparing
+the results of an unaltered data set to the results of a dataset that has undergone HPSS
+preprocessing, and fine that HPSS is a valuable preprocessing step before extracting
+chroma vectors
 
 \section{Introduction}\label{sec:intro}
 
@@ -52,16 +52,25 @@ Chords describe the harmonic content of a piece of music. Automatic estimation o
 has many applications in music information retrieval and music annotation. For example,
 automatic chord estimation may be used to inference genre and emotional content 
 (minor, sad; major, happy) of a piece, or to identify songs of similar form.
-They have also been used successfully in detecting cover-songs \cite{Papadopoulos:18}.
+It has also been used successfully in detecting cover-songs \cite{Papadopoulos:18}.
 
 Automatic chord detection has been a MIREX task since 2008, and has since seen increased
 improvement, with submissions in 2012 surpassing 72 percent accuracy on unseen data
-\cite{McVicar:00}. Hidden Markov Models have been used successfully in a number of
-automatic chord estimation models, including \cite{Ueda:01} \cite{Lee:15} \cite{Ueda:19}
-and \cite{Papadopoulos:18}.
+\cite{McVicar:00}. Hidden Markov Models have been used as a successful modeling stategy
+ in a number of automatic chord estimation models, including \cite{Ueda:01} \cite{Lee:15} \cite{Ueda:19}
+and \cite{Papadopoulos:18}. All of these models use chromagrams (Pitch Class Profiles)
+at the feature extraction phase, which represent the pitch content for a song for each sampled
+window.  \cite{McVicar:00},  \cite{Lee:15}, \cite{Papadopoulos:18}, and\cite{Zenz:20} have all found
+that chroma extraction on beats improves results, as chords more frequently change on beats.
 
-...EDIT: Write more about previous papers that used HPSS, and beat synchronous extraction
-when you are less a sleepy bear ...
+Another method to improve the resolution of chromagrams is filtering out transient and precussive
+information that does not contribute to the harmonic content, but may add noise to the extracted
+chromagram. A simple technique for this, is to filter the frequencies where chromas are extracted
+so that they are restructed to the range with the most pitch content. Another is to supress harmonic
+and percussive sounds using harmonic/percussive sound seperation (HPSS). 
+
+
+...EDIT: Write more about previous papers that used HPSS.
 
 
 \section{Overview}\label{sec:approch}
