@@ -13,6 +13,7 @@
 \usetikzlibrary{shapes,arrows}
 \usetikzlibrary{calc}
 \usepackage{caption}
+\usepackage{subcaption}
 
 %For Tables
 \usepackage{booktabs}
@@ -59,7 +60,7 @@ detecting cover-songs \cite{Papadopoulos:18}.
 Automatic chord detection has been a MIREX task since 2008, and has since seen
 increased improvement, with submissions in 2012 surpassing 72 percent accuracy
 on unseen data \cite{McVicar:00}. Hidden Markov Models have been used as a
-successful modeling stategy in a number of automatic chord estimation models,
+successful modeling strategy in a number of automatic chord estimation models,
 including \cite{Ueda:01} \cite{Lee:15} \cite{Ueda:19} and
 \cite{Papadopoulos:18}. All of these models use chroma vectors (Pitch Class
 Profiles) at the feature extraction phase, which represent the pitch content
@@ -70,19 +71,13 @@ and\cite{Zenz:20} have all found that chroma extraction on beats improves
 results, as chords more frequently change on beats.
 
 Another method to improve the resolution of chromagrams is filtering out
-transient and precussive information that does not contribute to the harmonic
+transient and percussive information that does not contribute to the harmonic
 content, but may add noise to the extracted chromagram. A simple technique for
 this, is to filter the frequencies where chromas are extracted so that they are
-restructed to the range with the most pitch content. Another is to supress
-harmonic and percussive sounds using harmonic/percussive sound seperation
+restricted to the range with the most pitch content. Another is to suppress
+harmonic and percussive sounds using harmonic/percussive sound separation
 (HPSS).  It has been noted that applying this pre processing step can greatly
-improve chord estimation accuracy \cite{Reed:09}.  In a spectrogram the
-harmonic components of a musical signal have  a stable pitch and form parallel
-ridges along the time axis. Transient sounds distribute  their frequency
-content across the entire spectrum and occur during short time frames, which
-can be seen as spikes in the frequency axis. The end product of HPSS is two
-signals, one with mostly harmonic content, the other with percussive sounds
-which is obtained by complementary diffusion on the spectrogram.  
+improve chord estimation accuracy \cite{Reed:09}.
 
 \section{Overview}\label{sec:approch}
 
@@ -92,11 +87,11 @@ top 100 chart between the years 1958 and 1991. Each song also includes beat by
 beat chord annotation \cite{Burgoyne:07}. The chords are labeled as either maj,
 min, aug, dim, sus2, sus4, or N, where N imply no chord is present. A
 distinction is made between enharmonic labels (for example both G\# and Ab
-occur in the annotations), for a total of 128 chord labels. 
+occur in the annotations), for a total of 128 chord labels.
 
 For our the scope of our project we reduced this number by combining the
 enharmonic labels and reassigning the chord labels into two classes: major and
-minor, as seen in Figure \ref{fig:chordlabs}. Combined with the no chord label,
+minor, as seen in Figure~\ref{fig:chordlabs}. Combined with the no chord label,
 we considered 25 distinct chord labels.
 
 \begin{figure}
@@ -105,8 +100,8 @@ we considered 25 distinct chord labels.
 	\begin{tabular}{l c}
 	\toprule
 	 Original Chord Labels        & Treated As   \\ \midrule
-	 Maj, Aug, sus4, sus2      & Maj           \\ \midrule
-	 min, dim                        & min           \\
+	 Maj, Aug, sus4, sus2         & Maj           \\ \midrule
+	 min, dim                     & min           \\
 	\bottomrule
 	\end{tabular}
 	}
@@ -129,7 +124,7 @@ Learn only provides an unsupervised HMM, we calculated the initial transition
 matrix, prior probability, mean and convariance of the vectors to feed into
 SciKit learn as initial values.
 
-A full overview of our proposed model can be seen in Figure \ref{fig:overview}.
+A full overview of our proposed model can be seen in Figure~\ref{fig:overview}.
 
 % Define block style
 \tikzstyle{block} = [rectangle, draw, fill=blue!20,
@@ -171,7 +166,15 @@ sample \cite{FitzGerald:11}.  $l$ gives the number of samples over which the
 filter takes place. In our implementation a size of 23 provided the best result
 given the broad range of audio styles in the Billboard dataset.
 
-$$y(n) = median \left \{x(n-k:n+k),l = (l-2)/2  \right \}$$
+In a spectrogram the harmonic components of a musical signal have  a stable
+pitch and form parallel ridges along the time axis. Transient sounds distribute
+their frequency content across the entire spectrum and occur during short time
+frames, which can be seen as spikes in the frequency axis. The end product of
+HPSS is two signals, one with mostly harmonic content, the other with
+percussive sounds which is obtained by complementary diffusion on the
+spectrogram.
+
+$$ y(n) = median \left \{x(n-k:n+k),l = (l-2)/2  \right \} $$
 
 The percussive suppressed spectrogram (the harmonic information) is then used
 to create a mask which is applied to the original spectrogram. A soft mask
@@ -190,19 +193,19 @@ be a useful pre-processing step for beat extraction in future work.
 
 \begin{figure*}
 	\resizebox{\textwidth}{!}{%
-	\begin{tabular}{l c c c c}
+	\begin{tabular}{l c c c}
 	\toprule
-	 & 64 Test Set Avg             & All Songs Test Set Avg & All Songs Test Set Max &  \\ \midrule
-	Non-Processed                  & 1.0\% & 1.0\% & 20.7\%  &  \\
-	HPSS                                  & 1.5\% & 1.0\% & 19.9\%  &  \\
-	Non-Processed - 2 Iter      & 3.2\% & 2.9\% & 44.7\%  &  \\
-	HPSS - 2 Iter                      & 3.7\% & 3.4\% & 60.5\%  &  \\
-	Non-Processed - 10 Iter    & 3.5\% & 3.2\% & 38.9\%  &  \\
-	HPSS - 10 Iter                    & 4.1\% & 4.1\% & 36.5\%  &  \\
-	Non-Processed - 100 Iter  & 4.2\% & 3.9\% & 17.1\%  &  \\
-	HPSS - 100 Iter                  & 5.1\% & 4.6\% & 18.0\%  &  \\
-	100 Songs - 500 Iter         & 5.5\% & 5.3\% & 20.1\%  &  \\
-	HPSS 100 Songs - 500 Iter & 6.2\% & 6.4\% & 25.8\%  &  \\
+                              & 64 Test Set Avg & All Songs Test Set Avg & All Songs Test Set Max  \\ \midrule
+	Non-Processed             & 1.0\%           & 1.0\%                  & 20.7\%   \\
+	HPSS                      & 1.5\%           & 1.0\%                  & 19.9\%   \\
+	Non-Processed - 2 Iter    & 3.2\%           & 2.9\%                  & 44.7\%   \\
+	HPSS - 2 Iter             & 3.7\%           & 3.4\%                  & 60.5\%   \\
+	Non-Processed - 10 Iter   & 3.5\%           & 3.2\%                  & 38.9\%   \\
+	HPSS - 10 Iter            & 4.1\%           & 4.1\%                  & 36.5\%   \\
+	Non-Processed - 100 Iter  & 4.2\%           & 3.9\%                  & 17.1\%   \\
+	HPSS - 100 Iter           & 5.1\%           & 4.6\%                  & 18.0\%   \\
+	100 Songs - 500 Iter      & 5.5\%           & 5.3\%                  & 20.1\%   \\
+	HPSS 100 Songs - 500 Iter & 6.2\%           & 6.4\%                  & 25.8\%   \\
 	\bottomrule
 	\end{tabular}
 	}
@@ -216,6 +219,20 @@ without HPSS, and a 78.48 percent chord recognition rate was achieved with it.
 Our results also show similar gains after using the preprocessed audio.
 
 \subsection{Chromogram Computation}
+
+\begin{figure*}
+	\centering
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=\textwidth]{187.png}
+        \caption{Extracted Chroma Vector}
+        \label{fig:ChromaNorm}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=\textwidth]{187h.png}
+        \caption{Extracted Chroma Vector after HPSS}
+        \label{fig:ChromaHPSS}
+    \end{subfigure}
+\end{figure*}
 
 To compute the 12-dimensional chroma vectors (or Pitch Class Profiles), we used
 the Chroma method available in Marsyas, and restricted the frequencies between
@@ -237,20 +254,6 @@ can be seen in figures \ref{fig:ChromaNorm} and \ref{fig:ChromaHPSS}
 respectively. In these figures, the y-axis corresponds to the chord labels
 C(1), C\#(2), D(3), etc. It's clear to see that after the HPSS processing, the
 chromas become much cleaner.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.5\textwidth]{187.png}
-	\caption{Extracted Chroma Vector}
-	\label{fig:ChromaNorm}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.5\textwidth]{187h.png}
-	\caption{Extracted Chroma Vector after HPSS}
-	\label{fig:ChromaHPSS}
-\end{figure}
 
 \subsection{Hidden Markov Models}
 
@@ -285,20 +288,27 @@ produced the given sequence of chroma vectors.
 
 \begin{figure}
    \centering
-   \includegraphics[width=0.5\textwidth]{trans-h.png}
+   \includegraphics[width=0.4\textwidth]{trans-h.png}
    \caption{Initial Transition Matrix}
    \label{fig:transmath}
 \end{figure}
 
 \subsection{Evaluation}
 
-\cite{Danellis:23} problems with viterbi...
+Despite creating the initial values to train the data with supervised learning,
+we were unable to optimize the Viterbi algorithm to find the optimal path
+through the states. Because it uses recognition, and not a forced alignment
+technique, the algorithm assumes any chord may follow another, even if those
+state transitions never appeared in the training data. \cite{Danellis:23}
+discusses the impact of this optimization on an EM-Trained HMM chord model.
+Without the forced alignment, results using chromagrams were as low as 10
+percent on a small set of Beatles song data. When forced alignment was used,
+and the algorithm only assumed progressions in the test data were valid,
+results on the same test set increased by over 16 percent.  Hey look a
+dinosaur.
 
-Hey look a dinosaur.
-What worked well? What didn't? Where did most of the errors occur?
-What was our success rate? Did the results improve with HPSS?
 
-Hey look a dinosaur.
+EDIT ME
 
 \section{Conclusion and Future Work}
 
@@ -314,7 +324,7 @@ tuning using Harte's tuning algorithm is a staple of most modern algorithms.
 Some older papers such as \cite{Zenz:20} mention micro--tuning of the human
 voice as well as percussive sounds as sources of classification error, so
 tuning algorithms may be worth investigating as a future preprocessing stepin
-addition to HPSS. 
+addition to HPSS.
 
 Each song in the Billboard dataset also includes key information. It is
 possible to use the HMM model to simultaneously estimate the chords and the key
