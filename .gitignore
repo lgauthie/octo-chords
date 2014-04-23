@@ -2,3 +2,7 @@
 *.pdf
 *.swp
 *.log
+*.p
+*.mf
+*.arff
+*.pyc
