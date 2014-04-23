@@ -159,20 +159,22 @@ A full overview of our proposed model can be seen in Figure~\ref{fig:overview}.
 
 \subsection{PreProcessing}
 
-Harmonic percussive source separation was completed using the Python Librosa
-package \cite{librosa:24}. A median filter works by replacing a each fr
-in a signal by the median of the signal values in the FFT bins around the
-sample \cite{FitzGerald:11}.  $l$ gives the number of samples over which the
-filter takes place. In our implementation a size of 23 provided the best result
-given the broad range of audio styles in the Billboard dataset.
-
-In a spectrogram the harmonic components of a musical signal have  a stable
+In a spectrogram the harmonic components of a musical signal have a stable
 pitch and form parallel ridges along the time axis. Transient sounds distribute
 their frequency content across the entire spectrum and occur during short time
 frames, which can be seen as spikes in the frequency axis. The end product of
 HPSS is two signals, one with mostly harmonic content, the other with
 percussive sounds which is obtained by complementary diffusion on the
 spectrogram.
+
+HPSS was completed using Python code provided by \cite{librosa:24}. To separate
+the frequency content produced by percussive elemnts from the harmonic
+elements, median filtering is applied.  It works by replacing each freqeuncy
+bin with the median of the values in the surrounding bins \cite{FitzGerald:11}.
+In our implementation an $l$ size of 23 provided the best result given the
+broad range of audio styles in the Billboard dataset. When $l$ was larger than
+40, the attack of harmonic components became too slow, which is valuable
+information during chroma extraction.
 
 $$ y(n) = median \left \{x(n-k:n+k),l = (l-2)/2  \right \} $$
 
