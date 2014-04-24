@@ -352,16 +352,18 @@ model fails on most songs, on some it can achieve accuracy up to 60\%.
 \section{Conclusion and Future Work}
 
 We have introduced a simple beat-synchronous automatic chord estimation model
-and evaluated the effectiveness of HPSS as a preprocessing step.
-
-One preprocessing step that we have not considered in this paper is tuning.
-Because tuning pitch may differ between recordings, it may be necessary to
-consider different candidate chroma vectors.~\cite{McVicar:00} suggests that
-tuning using Harte's tuning algorithm is a staple of most modern algorithms.
-Some older papers such as~\cite{Zenz:20} mention micro-tuning of the human
-voice as well as percussive sounds as sources of classification error, so
-tuning algorithms may be worth investigating as a future preprocessing step in
-addition to HPSS\@.
+and evaluated the effectiveness of HPSS as a preprocessing step. Despite having low
+results, it is still clear that preprocessing the audio with HPSS improves the
+output of the system. Unfortunately, SciKit learn's HMM model is not effient for
+supervised systems, even when the initial data is given to it. This is because the
+Viterbi algorithm is not able to be optimized. We also discovered as we worked
+on this project, that SciKit lean will be removing their HMM implementation from
+their framework; however, this code will still be available through the HMMLean GitHub.
+There is also currently an extention of this framework, called seqlearn, that is in 
+development to extend the framework to supervised learning. Future iterations
+of this project could be improved by using seqlearn if it's development continues. 
+Otherwise, continuing to write Dan Ellis' matlab implementation into Python could
+be a good starting point for creating a more effective model.
 
 The estimation model could also be improved by taking into account more
 information about the music context. For example, information about key could
@@ -372,6 +374,12 @@ Information about the time signature of a song could be used to decide when
 chord changes occur. A simple way to add this in would be to penalize chords
 from changing on weak beats. In both cases this extra information could be
 encoded in a Markov Logic Network as suggested in~\cite{Papadopoulus:04}.
+
+The chroma vectors we extracted could also be improved beyond HPSS. For
+example, ~\cite{McVicar:00} suggests that
+tuning using Harte's tuning algorithm is a staple of most modern algorithms.
+Some older papers such as~\cite{Zenz:20} mention micro-tuning of the human
+voice as well as percussive sounds as sources of classification error.
 
 Each song in the Billboard dataset also includes key information. It is
 possible to use the HMM model to simultaneously estimate the chords and the key
