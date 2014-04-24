@@ -185,28 +185,6 @@ pre-processing step for beat extraction in future work.
 \end{figure}
 
 
-\begin{figure*}
-	\resizebox{\textwidth}{!}{%
-	\begin{tabular}{l c c c}
-	\toprule
-                                & 64 Test Set Avg & All Songs Test Set Avg & All Songs Test Set Max  \\ \midrule
-	Non-Processed               & 1.0\%           & 1.0\%                  & 20.7\%   \\
-	HPSS                        & 1.5\%           & 1.0\%                  & 19.9\%   \\
-	Non-Processed --- 2 Iter    & 3.2\%           & 2.9\%                  & 44.7\%   \\
-	HPSS --- 2 Iter             & 3.7\%           & 3.4\%                  & 60.5\%   \\
-	Non-Processed --- 10 Iter   & 3.5\%           & 3.2\%                  & 38.9\%   \\
-	HPSS --- 10 Iter            & 4.1\%           & 4.1\%                  & 36.5\%   \\
-	Non-Processed --- 100 Iter  & 4.2\%           & 3.9\%                  & 17.1\%   \\
-	HPSS --- 100 Iter           & 5.1\%           & 4.6\%                  & 18.0\%   \\
-	100 Songs --- 500 Iter      & 5.5\%           & 5.3\%                  & 20.1\%   \\
-	HPSS 100 Songs --- 500 Iter & 6.2\%           & 6.4\%                  & 25.8\%   \\
-	\bottomrule
-	\end{tabular}
-	}
-\caption{Results Table}
-\label{fig:resulttable}
-\end{figure*}
-
 \cite{Ueda:19} discusses a model very similar to our goals. Using the
 Beatles annotated data set, a 74.24 percent chord recognition rate was achieved
 without HPSS, and a 78.48 percent chord recognition rate was achieved with it.
@@ -228,14 +206,14 @@ Our results also show similar gains after using the preprocessed audio.
 
 To compute the 12-dimensional chroma vectors (or Pitch Class Profiles), we used
 the Chroma method available in Marsyas, and restricted the frequencies between
-Octave 1 and 5 (\~60--1000Hz).
+Octave 1 and 5 (approximately 60--1000Hz).
 
 Because most chord transitions occur on beats, extracting chorma information for
 windows corresponding to each beat has shown to be beneficial to creating an
 more accurate automatic chord estimation model. For example, in~\cite{Zenz:20},
-extracting chroma vectors on beats improved the results by 6 percent. This method 
-exploits the stability of chords between beats, and reduces the overall computational 
-cost by reducing the total number of windows~\cite{McVicor:00}. Because the Billboard 
+extracting chroma vectors on beats improved the results by 6 percent. This method
+exploits the stability of chords between beats, and reduces the overall computational
+cost by reducing the total number of windows~\cite{McVicor:00}. Because the Billboard
 data is annotation at beat times, this approach naturally lines up with our ground truth data.
 
 Two sets of chromagrams were calculated for our dataset, one set with HPSS
@@ -265,6 +243,12 @@ off of Dan Ellis' Matlab code available through Labrosa. Due to the large size
 of our dataset, using Matlab was infeasible for processing time, so this was
 rewritten into Python to be fed into SciKit's GaussianHMM model.
 
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=0.4\textwidth]{trans-h.png}
+   \caption{Transition Matrix}\label{fig:transmath}
+\end{figure}
+
 SciKit uses the Expectation Maximization (EM) algorithm to train the model and the
 Viterbi algorithm to predict the most likely chord progression given a sequence
 of chroma vectors. The number of iterations for the EM algorithm is specified by the user. For
@@ -277,39 +261,60 @@ trained and tested with all of the data. Secondly, 63 random songs were removed
 from the data set and reserved for testing while the rest were used to
 training.
 
-\begin{figure}
-   \centering
-   \includegraphics[width=0.4\textwidth]{trans-h.png}
-   \caption{Transition Matrix}\label{fig:transmath}
-\end{figure}
-
 \subsection{Evaluation}
 
-Figure~\ref{fig:resulttable} shows the results of our system for the processed and
-non processed audio. Although we fed initial values into the SciKit framework, using
-this framework for supervised learning was not in any way optimal.  Despite creating the 
-initial values to train the data with supervised learning, we were unable to optimize the 
-Viterbi algorithm to find the optimal path through the states. Because it uses recognition, 
-and not a forced alignment technique, the algorithm assumes any chord may follow another, 
-even if those state transitions never appeared in the training data. \cite{Danellis:23} discusses 
-the impact of this optimization on an EM-Trained HMM chord model. Without the
-forced alignment, results using chromagrams were as low as 10 percent on a small set of 
-Beatles song data. When forced alignment was used, and the algorithm only assumed 
-progressions in the test data were valid, results on the same test set increased by over 16 percent. 
+Figure~\ref{fig:resulttable} shows the results of our system for the processed
+and non processed audio. Although we fed initial values into the SciKit
+framework, using this framework for supervised learning was not in any way
+optimal.  Despite creating the initial values to train the data with supervised
+learning, we were unable to optimize the Viterbi algorithm to find the optimal
+path through the states. Because it uses recognition, and not a forced
+alignment technique, the algorithm assumes any chord may follow another, even
+if those state transitions never appeared in the training data.
+\cite{Danellis:23} discusses the impact of this optimization on an EM-Trained
+HMM chord model. Without the forced alignment, results using chromagrams were
+as low as 10 percent on a small set of Beatles song data. When forced alignment
+was used, and the algorithm only assumed progressions in the test data were
+valid, results on the same test set increased by over 16 percent.
 
-We also found that the testing results ofter predicted the wrong starting chord. An example of this is a
-song in they key of Ab major, but the first predicted chord is Bb major. It is
-likely that the model with keep predicting chords relative to Bb major, and
-therefore will miss-classify all of the chords for that particular song.
+\begin{figure}[h]
+	\resizebox{0.5\textwidth}{!}{%
+	\begin{tabular}{l c c}
+	\toprule
+                                & 64 Test Set Avg &  64 Test Max \\ \midrule
+	Non-Processed               & 1.0\%           &  20.7\%   \\
+	HPSS                        & 1.5\%           &  19.9\%   \\
+	Non-Processed --- 2 Iter    & 3.2\%           &  44.7\%   \\
+	HPSS --- 2 Iter             & 3.7\%           &  60.5\%   \\
+	Non-Processed --- 10 Iter   & 3.5\%           &  38.9\%   \\
+	HPSS --- 10 Iter            & 4.1\%           &  36.5\%   \\
+	Non-Processed --- 100 Iter  & 4.2\%           &  17.1\%   \\
+	HPSS --- 100 Iter           & 5.1\%           &  18.0\%   \\
+	100 Songs --- 500 Iter      & 5.5\%           &  20.1\%   \\
+	HPSS 100 Songs --- 500 Iter & 6.2\%           &  25.8\%   \\
+	\bottomrule
+	\end{tabular}
+	}
+\caption{Results Table}
+\label{fig:resulttable}
+\end{figure}
 
-Despite having low results, our model does still show in increased accuracy when HPSS is used on the
-audio data. It also shows increased accuracy as the number of iterations in training the EM algorithm
-increases, which is to be expected. The motivation to evaluation only 100 songs at 500 iterations was
-processing time, but it is likely that with the entire test set, similar results would be achieved.
+We also found that the testing results ofter predicted the wrong starting
+chord. An example of this is a song in they key of Ab major, but the first
+predicted chord is Bb major. It is likely that the model with keep predicting
+chords relative to Bb major, and therefore will miss-classify all of the chords
+for that particular song.
 
-The final column in Figure ~\ref{fig:resulttable} shows the accuracy for the highest scoring song for
-each run. It's interesting to note that while the model fails on most songs, on some it can achieve
-accuracy up to 60 percent.
+Despite having low results, our model does still show in increased accuracy
+when HPSS is used on the audio data. It also shows increased accuracy as the
+number of iterations in training the EM algorithm increases, which is to be
+expected. The motivation to evaluation only 100 songs at 500 iterations was
+processing time, but it is likely that with the entire test set, similar
+results would be achieved.
+
+The final column in figure~\ref{fig:resulttable} shows the accuracy for the
+highest scoring song for each run. It's interesting to note that while the
+model fails on most songs, on some it can achieve accuracy up to 60 percent.
 
 \section{Conclusion and Future Work}
 
