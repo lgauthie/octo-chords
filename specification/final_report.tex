@@ -35,17 +35,21 @@
 \maketitle
 %
 
+%\section{Abstract}\label{sec:desoutline}
 
-\section{Abstract}\label{sec:desoutline}
+\begin{abstract}
+
 This project aims to investigate and evaluate some of the current strategies
 for automatic chord estimation. We present a simple HMM-based mode that uses
 the SciKit Learn framework for detecting chords from audio signals using beat
-synchronous chroma vectors.  SciKit learn is an open source toolkit in Python 
-for machine learning. We evaluate the effectiveness of Harmonic/Percussive 
-Sound Separation (HPSS) as a preprocessing step by
-comparing the results of an unaltered data set to the results of a dataset that
-has undergone HPSS preprocessing, and find that HPSS is a valuable
-preprocessing step prior to extracting chroma vectors.
+synchronous chroma vectors.  SciKit Learn is an open source toolkit in Python
+for machine learning. We evaluate the effectiveness of Harmonic/Percussive
+Sound Separation (HPSS) as a preprocessing step by comparing the results of an
+unaltered data set to the results of a dataset that has undergone HPSS
+preprocessing, and find that HPSS is a valuable preprocessing step prior to
+extracting chroma vectors.
+
+\end{abstract}
 
 \section{Introduction}\label{sec:intro}
 
@@ -190,7 +194,7 @@ Beatles annotated data set, a 74.24 percent chord recognition rate was achieved
 without HPSS, and a 78.48 percent chord recognition rate was achieved with it.
 Our results also show similar gains after using the preprocessed audio.
 
-\subsection{Chromogram Computation}
+\subsection{Chromagram Computation}
 
 \begin{figure*}
 	\centering
@@ -213,7 +217,7 @@ windows corresponding to each beat has shown to be beneficial to creating an
 more accurate automatic chord estimation model. For example, in~\cite{Zenz:20},
 extracting chroma vectors on beats improved the results by 6 percent. This method
 exploits the stability of chords between beats, and reduces the overall computational
-cost by reducing the total number of windows~\cite{McVicor:00}. Because the Billboard
+cost by reducing the total number of windows~\cite{McVicar:00}. Because the Billboard
 data is annotation at beat times, this approach naturally lines up with our ground truth data.
 
 Two sets of chromagrams were calculated for our dataset, one set with HPSS
@@ -316,53 +320,20 @@ The final column in figure~\ref{fig:resulttable} shows the accuracy for the
 highest scoring song for each run. It's interesting to note that while the
 model fails on most songs, on some it can achieve accuracy up to 60 percent.
 
-\subsection{Evaluation}
-
-Figure~\ref{fig:resulttable} shows the results of our system for the processed
-and non processed audio. Although we fed initial values into the SciKit
-framework, using this framework for supervised learning was not in any way
-optimal.  Despite creating the initial values to train the data with supervised
-learning, we were unable to optimize the Viterbi algorithm to find the optimal
-path through the states. Because it uses recognition, and not a forced
-alignment technique, the algorithm assumes any chord may follow another, even
-if those state transitions never appeared in the training data.
-\cite{Danellis:23} discusses the impact of this optimization on an EM-Trained
-HMM chord model. Without the forced alignment, results using chromagrams were
-as low as 10 percent on a small set of Beatles song data. When forced alignment
-was used, and the algorithm only assumed progressions in the test data were
-valid, results on the same test set increased by over 16 percent.
-
-We also found that the testing results ofter predicted the wrong starting
-chord. An example of this is a song in they key of Ab major, but the first
-predicted chord is Bb major. It is likely that the model will keep predicting
-chords relative to Bb major, and therefore will miss-classify all of the chords
-for that particular song.
-
-Despite having low results, our model does still show in increased accuracy
-when HPSS is used on the audio data. It also shows increased accuracy as the
-number of iterations in training the EM algorithm increases, which is to be
-expected. The motivation to create a model using only 100 songs, but with more
-iterations was processing time. It is likely that with the entire test set,
-similar results would be achieved.
-
-The final column in figure~\ref{fig:resulttable} shows the accuracy for the
-highest scoring song for each run. It's interesting to note that while the
-model fails on most songs, on some it can achieve accuracy up to 60\%.
-
 \section{Conclusion and Future Work}
 
 We have introduced a simple beat-synchronous automatic chord estimation model
 and evaluated the effectiveness of HPSS as a preprocessing step. Despite having low
 results, it is still clear that preprocessing the audio with HPSS improves the
-output of the system. Unfortunately, SciKit learn's HMM model is not effient for
+output of the system. Unfortunately, SciKit Learn's HMM model is not efficient for
 supervised systems, even when the initial data is given to it. This is because the
 Viterbi algorithm is not able to be optimized. We also discovered as we worked
 on this project, that SciKit lean will be removing their HMM implementation from
 their framework; however, this code will still be available through the HMMLean GitHub.
-There is also currently an extention of this framework, called seqlearn, that is in 
+There is also currently an extension of this framework, called seqlearn, that is in
 development to extend the framework to supervised learning. Future iterations
-of this project could be improved by using seqlearn if it's development continues. 
-Otherwise, continuing to write Dan Ellis' matlab implementation into Python could
+of this project could be improved by using seqlearn if it's development continues.
+Otherwise, continuing to write Dan Ellis' Matlab implementation into Python could
 be a good starting point for creating a more effective model.
 
 The estimation model could also be improved by taking into account more
@@ -375,8 +346,8 @@ chord changes occur. A simple way to add this in would be to penalize chords
 from changing on weak beats. In both cases this extra information could be
 encoded in a Markov Logic Network as suggested in~\cite{Papadopoulus:04}.
 
-The chroma vectors we extracted could also be improved beyond HPSS. For
-example, ~\cite{McVicar:00} suggests that
+The chroma vectors we extracted could also be improved beyond HPSS\@. For
+example,~\cite{McVicar:00} suggests that
 tuning using Harte's tuning algorithm is a staple of most modern algorithms.
 Some older papers such as~\cite{Zenz:20} mention micro-tuning of the human
 voice as well as percussive sounds as sources of classification error.
