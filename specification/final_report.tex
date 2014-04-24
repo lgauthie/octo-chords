@@ -341,14 +341,13 @@ for that particular song.
 Despite having low results, our model does still show in increased accuracy
 when HPSS is used on the audio data. It also shows increased accuracy as the
 number of iterations in training the EM algorithm increases, which is to be
-expected. The motivation to evaluation only 100 songs at 500 iterations was
-processing time, but it is likely that with the entire test set, similar
-results would be achieved.
+expected. The motivation to create a model using only 100 songs, but with more
+iterations was processing time. It is likely that with the entire test set,
+similar results would be achieved.
 
 The final column in figure~\ref{fig:resulttable} shows the accuracy for the
 highest scoring song for each run. It's interesting to note that while the
 model fails on most songs, on some it can achieve accuracy up to 60\%.
-
 
 \section{Conclusion and Future Work}
 
@@ -367,12 +366,12 @@ addition to HPSS\@.
 The estimation model could also be improved by taking into account more
 information about the music context. For example, information about key could
 be used to choose a reasonable starting chord, or limit the choices of chords
-for the current song. Limiting the chord choices will run into problems if the
-song relies on out of key chords, or has a key change at any point. Information
-about the time signature of a song could be used to decide when chord changes
-occur. A simple way to add this in would be to penalize chords from changing on
-weak beats. In both cases this extra information could be encoded in a Markov
-Logic Network as suggested in~\cite{Papadopoulus:04}.
+for the current song. Limiting the chord choices has potential for problems if
+the song relies on out of key chords, or has a key change at any point.
+Information about the time signature of a song could be used to decide when
+chord changes occur. A simple way to add this in would be to penalize chords
+from changing on weak beats. In both cases this extra information could be
+encoded in a Markov Logic Network as suggested in~\cite{Papadopoulus:04}.
 
 Each song in the Billboard dataset also includes key information. It is
 possible to use the HMM model to simultaneously estimate the chords and the key
