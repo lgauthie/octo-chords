@@ -318,31 +318,36 @@ model fails on most songs, on some it can achieve accuracy up to 60 percent.
 
 \subsection{Evaluation}
 
-Figure~\ref{fig:resulttable} shows the results of our system for the processed and
-non processed audio. Although we fed initial values into the SciKit framework, using
-this framework for supervised learning was not in any way optimal.  Despite creating the 
-initial values to train the data with supervised learning, we were unable to optimize the 
-Viterbi algorithm to find the optimal path through the states. Because it uses recognition, 
-and not a forced alignment technique, the algorithm assumes any chord may follow another, 
-even if those state transitions never appeared in the training data. \cite{Danellis:23} discusses 
-the impact of this optimization on an EM-Trained HMM chord model. Without the
-forced alignment, results using chromagrams were as low as 10 percent on a small set of 
-Beatles song data. When forced alignment was used, and the algorithm only assumed 
-progressions in the test data were valid, results on the same test set increased by over 16 percent. 
+Figure~\ref{fig:resulttable} shows the results of our system for the processed
+and non processed audio. Although we fed initial values into the SciKit
+framework, using this framework for supervised learning was not in any way
+optimal.  Despite creating the initial values to train the data with supervised
+learning, we were unable to optimize the Viterbi algorithm to find the optimal
+path through the states. Because it uses recognition, and not a forced
+alignment technique, the algorithm assumes any chord may follow another, even
+if those state transitions never appeared in the training data.
+\cite{Danellis:23} discusses the impact of this optimization on an EM-Trained
+HMM chord model. Without the forced alignment, results using chromagrams were
+as low as 10 percent on a small set of Beatles song data. When forced alignment
+was used, and the algorithm only assumed progressions in the test data were
+valid, results on the same test set increased by over 16 percent.
 
-We also found that the testing results ofter predicted the wrong starting chord. An example of this is a
-song in they key of Ab major, but the first predicted chord is Bb major. It is
-likely that the model with keep predicting chords relative to Bb major, and
-therefore will miss-classify all of the chords for that particular song.
+We also found that the testing results ofter predicted the wrong starting
+chord. An example of this is a song in they key of Ab major, but the first
+predicted chord is Bb major. It is likely that the model will keep predicting
+chords relative to Bb major, and therefore will miss-classify all of the chords
+for that particular song.
 
-Despite having low results, our model does still show in increased accuracy when HPSS is used on the
-audio data. It also shows increased accuracy as the number of iterations in training the EM algorithm
-increases, which is to be expected. The motivation to evaluation only 100 songs at 500 iterations was
-processing time, but it is likely that with the entire test set, similar results would be achieved.
+Despite having low results, our model does still show in increased accuracy
+when HPSS is used on the audio data. It also shows increased accuracy as the
+number of iterations in training the EM algorithm increases, which is to be
+expected. The motivation to evaluation only 100 songs at 500 iterations was
+processing time, but it is likely that with the entire test set, similar
+results would be achieved.
 
-The final column in Figure ~\ref{fig:resulttable} shows the accuracy for the highest scoring song for
-each run. It's interesting to note that while the model fails on most songs, on some it can achieve
-accuracy up to 60%.
+The final column in figure~\ref{fig:resulttable} shows the accuracy for the
+highest scoring song for each run. It's interesting to note that while the
+model fails on most songs, on some it can achieve accuracy up to 60\%.
 
 
 \section{Conclusion and Future Work}
@@ -373,6 +378,13 @@ Each song in the Billboard dataset also includes key information. It is
 possible to use the HMM model to simultaneously estimate the chords and the key
 of an input audio file~\cite{McVicar:00}, so a future implementation may use
 this data to predict key information as well as chords.
+
+\section{Roles}
+\begin{itemize}
+    \item Sondra --- Chroma Extraction, Background Research, Paper
+    \item Lee --- Chroma Extraction, Supervised Learning Code, Paper
+    \item Robert --- HPSS processing, Data Management, Paper
+\end{itemize}
 
 \begin{thebibliography}{citations}
 
